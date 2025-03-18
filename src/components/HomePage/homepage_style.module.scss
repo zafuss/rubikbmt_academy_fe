@@ -1,0 +1,156 @@
+// styles/main.module.scss
+
+$primary-color: #2d676f;
+$button-bg: #f0e68c;
+$button-hover-bg: #e6d8a5;
+$section-padding: 20px;
+
+// Mixin dùng để giảm trùng lặp
+@mixin button-style($bg-color, $text-color) {
+    background-color: $bg-color;
+    color: $text-color;
+    border-radius: 10px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    &:hover {
+        background-color: $button-hover-bg;
+    }
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+// Sections
+.section {
+    color: $primary-color;
+    height: 100vh;
+    padding: $section-padding;
+    h1, p {
+        color: $primary-color;
+    }
+    button {
+        @include button-style($button-bg, $primary-color);
+    }
+}
+
+.introSection {
+    @extend .section;
+    background: linear-gradient(135deg, #dbf157, #a5c9e8);
+    
+    img {
+        width: 100%;
+    }
+}
+
+// Định nghĩa từng section
+#intro {
+    @extend .section;
+    background: linear-gradient(135deg, #dbf157, #a5c9e8);
+}
+
+#backToSchool {
+    @extend .section;
+    background: linear-gradient(135deg, #e18080, #3f67a8);
+}
+
+#about {
+    @extend .section;
+    background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
+    h1, h3 {
+        font-weight: bold;
+    }
+}
+
+#shopee {
+    @extend .section;
+    background: linear-gradient(135deg, #f5d5b1, #e18080);
+}
+
+#mentors {
+    @extend .section;
+    background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
+    h1, h3 {
+        font-weight: bold;
+    }
+}
+
+// Footer
+#footer {
+    background: #382f15;
+    color: $primary-color;
+    .bg-dark {
+        background-color: #333 !important;
+    }
+    .text-warning {
+        color: rgb(232, 222, 132) !important;
+        font-weight: 600;
+    }
+}
+
+// Button styles
+.btn-primary {
+    @include button-style($button-bg, $primary-color);
+}
+
+.btn-reply {
+    @include button-style(#2d9ed9, white);
+    &:hover {
+        background-color: #3480a8;
+    }
+}
+
+// Social media card styles
+#social-media {
+    h1, h2 {
+        color: $primary-color;
+    }
+    .card {
+        background-color: #fff;
+        border-radius: 15px;
+        padding: 20px;
+        transition: background-color 0.2s linear;
+        &:hover {
+            background-color: #dee0e1;
+        }
+    }
+}
+
+// Dialog styles
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.dialog {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+}
+
+// // Responsive styles
+// @media (max-width: 1024px) {
+//     .home-logo {
+//         width: 30vh;
+//     }
+// }
+// @media (max-width: 767px) {
+//     .home-logo {
+//         width: 35vh;
+//     }
+// }
