@@ -1,17 +1,15 @@
-import { useEffect } from "react";
 import styles from "./homepage_style.module.scss"; // Import SCSS module
 import { Container, Row, Col, Button } from "react-bootstrap"; // Import Bootstrap components
+import CubeViewer from "./RubiksCube/CubeViewer";
 
 const IntroSection = () => {
   return (
     <section id="intro" className={`${styles.section} ${styles.introSection}`}>
-      <Container className="mt-3">
-        <br />
+      <Container className="">
         <Row className="align-items-center">
           {/* Cột bên trái */}
           <Col md={6}>
-            {/* <div className="full-height" id="container"></div> */}
-            {/* <CubePage /> */}
+            <CubeViewer />
           </Col>
 
           {/* Cột bên phải */}

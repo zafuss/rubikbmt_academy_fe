@@ -3,7 +3,7 @@
 $primary-color: #2d676f;
 $button-bg: #f0e68c;
 $button-hover-bg: #e6d8a5;
-$section-padding: 20px;
+$section-padding: 0px;
 
 // Mixin dùng để giảm trùng lặp
 @mixin button-style($bg-color, $text-color) {
@@ -41,8 +41,14 @@ body {
     @extend .section;
     background: linear-gradient(135deg, #dbf157, #a5c9e8);
     
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    
     img {
-        width: 100%;
+        min-width: 60%;
+        max-width: 75%;
+        margin-bottom: 1rem;
     }
 }
 
