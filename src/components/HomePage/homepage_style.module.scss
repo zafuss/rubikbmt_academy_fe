@@ -1,4 +1,4 @@
-// styles/main.module.scss
+// styles/homepage_style.module.scss
 
 $primary-color: #2d676f;
 $button-bg: #f0e68c;
@@ -23,11 +23,18 @@ body {
     margin: 0;
     padding: 0;
 }
+.logoImage {
+  max-width: 100px; // Giới hạn chiều rộng tối đa (có thể điều chỉnh)
+  height: auto; // Giữ tỷ lệ ảnh
+  display: block; // Đảm bảo ảnh không có khoảng trống dư thừa bên dưới
+  margin: 0 auto; // Căn giữa ảnh (nếu cần)
+  padding-top: 200px; // Thêm khoảng cách từ trên xuống
+}
 
-// Sections
+// Style chung cho tất cả các section
 .section {
     color: $primary-color;
-    height: 100vh;
+    min-height: 100vh; // Đổi height thành min-height để linh hoạt hơn
     padding: $section-padding;
     h1, p {
         color: $primary-color;
@@ -37,44 +44,146 @@ body {
     }
 }
 
-.introSection {
-    @extend .section;
-    background: linear-gradient(135deg, #dbf157, #a5c9e8);
-    
-    img {
-        width: 100%;
-    }
-}
-
-// Định nghĩa từng section
+// Style cho từng section cụ thể
 #intro {
     @extend .section;
     background: linear-gradient(135deg, #dbf157, #a5c9e8);
-}
-
-#backToSchool {
-    @extend .section;
-    background: linear-gradient(135deg, #e18080, #3f67a8);
-}
-
-#about {
-    @extend .section;
-    background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
-    h1, h3 {
-        font-weight: bold;
+    .introSection {
+        img {
+            width: 100%;
+            max-width: 300px; // Giới hạn kích thước logo nếu cần
+        }
     }
 }
-
-#shopee {
-    @extend .section;
-    background: linear-gradient(135deg, #f5d5b1, #e18080);
+.introSection {
+  background: linear-gradient(to right,  #d4eb69, #c0dd9f, #abcddc); // Gradient từ xanh lá nhạt sang xanh dương nhạt
+  min-height: 100vh; // Đảm bảo section chiếm toàn bộ chiều cao màn hình (có thể điều chỉnh)
+  width: 100%;
+  padding: 20px 0; // Thêm padding trên/dưới để không sát mép
+}
+.customButton {
+  width: auto; // Tự động điều chỉnh chiều rộng dựa trên nội dung
+  max-width: 100px; // Giới hạn chiều rộng tối đa (có thể điều chỉnh)
+  margin-left: 0; // Đảm bảo nút sát bên trái
+  align-self: flex-start; // Căn trái trong flex container
 }
 
 #mentors {
     @extend .section;
     background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
-    h1, h3 {
+    h1 {
         font-weight: bold;
+    }
+    .mentor-image {
+        width: 100%;
+        max-width: 200px; // Giới hạn kích thước ảnh mentor
+        height: auto;
+        transition: transform 0.3s ease;
+        &:hover {
+            transform: scale(1.05); // Hiệu ứng phóng to khi hover
+        }
+    }
+}
+
+.icon {
+  max-width: 60px !important; // Tăng độ ưu tiên
+  height: auto !important;
+  object-fit: contain !important;
+  margin-right: 0.75rem !important;
+}
+
+.cardStyle {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.2s !important;
+  &:hover {
+    transform: translateY(-5px) !important;
+  }
+}
+
+.cardBody {
+  padding: 1rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.sectionTitle {
+  color: #2c666f; // Màu xanh lục đậm giống các section khác
+  font-weight: bold;
+}
+
+.cardTitle {
+  color: #2c666f; // Màu xanh lục đậm cho tiêu đề trong Card
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.noUnderline {
+  text-decoration: none !important; // Loại bỏ underline
+  &:hover {
+    text-decoration: none !important; // Đảm bảo không có underline khi hover
+    color: inherit; // Giữ nguyên màu text khi hover
+  }
+}
+.customWidth {
+  margin-bottom: 5rem;
+}
+.circleImage {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  img {
+    max-width: 100%; // Đảm bảo ảnh không vượt khung
+    max-height: 100%; // Đảm bảo ảnh không vượt khung
+    object-fit: cover; // Cắt ảnh để vừa khung tròn
+    
+  }
+}
+.circleImage:hover {
+ transition: transform 0.3s ease;
+  transform: scale(1.05); // Phóng to khi hover
+}
+.sectionTitle {
+  color: #2c666f; // Màu xanh lục đậm giống hình
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+.section {
+  padding: 3rem 0; // Giảm padding của section để làm khung nhỏ lại
+}
+.memberName {
+  color: #2c666f; // Màu xanh lục đậm cho tên
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.memberRole {
+  color: #2c666f; // Màu xanh lục đậm cho vai trò
+  font-size: 1rem;
+}
+
+.noUnderline {
+  text-decoration: none; // Loại bỏ underline
+  &:hover {
+    text-decoration: none; // Đảm bảo không có underline khi hover
+    color: inherit; // Giữ nguyên màu text khi hover
+  }
+}
+
+
+// Button styles
+.btnPrimary { // Đổi thành btnPrimary (camelCase) để khớp với React
+    @include button-style($button-bg, $primary-color);
+}
+
+.btn-reply {
+    @include button-style(#2d9ed9, white);
+    &:hover {
+        background-color: #3480a8;
     }
 }
 
@@ -88,34 +197,6 @@ body {
     .text-warning {
         color: rgb(232, 222, 132) !important;
         font-weight: 600;
-    }
-}
-
-// Button styles
-.btn-primary {
-    @include button-style($button-bg, $primary-color);
-}
-
-.btn-reply {
-    @include button-style(#2d9ed9, white);
-    &:hover {
-        background-color: #3480a8;
-    }
-}
-
-// Social media card styles
-#social-media {
-    h1, h2 {
-        color: $primary-color;
-    }
-    .card {
-        background-color: #fff;
-        border-radius: 15px;
-        padding: 20px;
-        transition: background-color 0.2s linear;
-        &:hover {
-            background-color: #dee0e1;
-        }
     }
 }
 
@@ -143,14 +224,53 @@ body {
     position: relative;
 }
 
-// // Responsive styles
-// @media (max-width: 1024px) {
-//     .home-logo {
-//         width: 30vh;
-//     }
-// }
-// @media (max-width: 767px) {
-//     .home-logo {
-//         width: 35vh;
-//     }
-// }
+// Responsive styles
+@media (max-width: 1024px) {
+    .section {
+        min-height: auto; // Giảm chiều cao trên màn hình nhỏ
+        padding: 10px;
+    }
+    .circleImage, .mentor-image {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+@media (max-width: 767px) {
+    .section {
+        min-height: auto;
+        padding: 5px;
+    }
+    .circleImage, .mentor-image {
+        width: 120px;
+        height: 120px;
+    }
+    .imgButton {
+        width: 40px;
+        height: 40px;
+    }
+}
+.info {
+  display: flex; // Sử dụng flexbox để căn giữa
+  justify-content: center; // Căn giữa theo chiều ngang
+  align-items: center; // Căn giữa theo chiều dọc (nếu cần)
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.mentorImage {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto; // Đảm bảo ảnh được căn giữa trong div.info
+}
+.headerGradient {
+  width: 120vw; // Đảm bảo chiều rộng toàn màn hình
+  margin-left: calc(-50vw + 50%); // Căn giữa và bù trừ cho lề
+  background: linear-gradient(90deg, #fed44c, #30ade3, #b855fe);
+  margin-bottom: 30px; // Giữ nguyên margin-bottom từ inline style
+  text-align: center;
+  position: relative; // Đảm bảo không ảnh hưởng đến các phần tử khác
+}

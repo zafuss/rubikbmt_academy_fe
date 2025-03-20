@@ -1,6 +1,10 @@
 .App {
   text-align: center;
 }
+a.noUnderline {
+  display: inline !important;
+  flex: none !important;
+}
 
 .App-logo {
   height: 40vmin;
@@ -35,4 +39,24 @@
   to {
     transform: rotate(360deg);
   }
+}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden; /* Ngăn cuộn ngang */
+}
+
+#root {
+  width: 100%;
+  overflow-x: hidden; /* Đảm bảo không có cuộn ngang */
+}
+@media (max-width: 768px) {
+  .section {
+    padding-right: 0 !important;
+  }
+}
+.customButton {
+  width: auto !important;
+  min-width: 0 !important;
 }
