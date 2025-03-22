@@ -1,0 +1,87 @@
+.pageContainer {
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
+}
+
+.headerSection {
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  color:  var(--primary);
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #6b7280;
+  margin: 8px 0 0;
+}
+
+.card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border: none;
+  margin-bottom: 24px;
+}
+
+.avatarSection {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  background: linear-gradient(135deg,  var(--primary) 0%, #2a5298 100%);
+}
+
+.uploadButton {
+  margin-top: 24px;
+}
+
+.userInfo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.userName {
+  margin: 0;
+  color:  var(--primary);
+  font-weight: 600;
+}
+
+.userRole {
+  color: #6b7280;
+  margin: 4px 0;
+}
+
+.infoLabel {
+  font-weight: 500;
+  color:  var(--primary);
+}
+
+.infoValue {
+  color: #6b7280;
+}
+
+.input {
+  border-radius: 8px;
+}
+
+.submitButton {
+  background: linear-gradient(90deg,  var(--primary),  var(--primaryGradient));
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  width: 100%;
+  color: #fff;
+  font-weight: 500;
+
+  &:hover {
+    background: linear-gradient(90deg,  var(--primaryGradient),  var(--primary));
+    color: #fff;
+  }
+}
