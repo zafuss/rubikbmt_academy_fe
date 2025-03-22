@@ -47,7 +47,7 @@ const NavBar = () => {
                 Mua hàng
               </Link>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className="nav-link" to="/#ranking">
                 Bảng xếp hạng giải đấu Back To School
               </Link>
@@ -56,7 +56,7 @@ const NavBar = () => {
               <Link className="nav-link" to="/#blog">
                 Bài viết
               </Link>
-            </li>
+            </li> */}
             <li className="nav-item">
               <Link className="nav-link" to="/#footer">
                 Liên hệ

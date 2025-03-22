@@ -126,7 +126,7 @@ const Layout = () => {
     items: [
       {
         key: "1",
-        label: <Link to="/profile">Thông tin cá nhân</Link>,
+        label: <Link to="/admin/profile">Thông tin cá nhân</Link>,
       },
       {
         key: "2",
@@ -141,14 +141,14 @@ const Layout = () => {
     {
       key: "1",
       icon: <DashboardOutlined />,
-      label: <Link to="/">Dashboard</Link>,
+      label: <Link to="/admin">Dashboard</Link>,
     },
     ...(userInfo.currentRole === "Admin"
       ? [
           {
             key: "2",
             icon: <UserOutlined />,
-            label: <Link to="/users">Quản lý người dùng</Link>,
+            label: <Link to="/admin/users">Quản lý người dùng</Link>,
           },
         ]
       : []),
@@ -163,24 +163,28 @@ const Layout = () => {
           children: [
             {
               key: "3",
-              label: <Link to="/classes/add/mass">Thêm lớp học đại trà</Link>,
+              label: (
+                <Link to="/admin/classes/add/mass">Thêm lớp học đại trà</Link>
+              ),
             },
             {
               key: "4",
-              label: <Link to="/classes/add/one-on-one">Thêm lớp học 1-1</Link>,
+              label: (
+                <Link to="/admin/classes/add/one-on-one">Thêm lớp học 1-1</Link>
+              ),
             },
           ],
         },
         {
           key: "5",
-          label: <Link to="/classes/list">Danh sách lớp học</Link>,
+          label: <Link to="/admin/classes/list">Danh sách lớp học</Link>,
         },
       ],
     },
     {
       key: "6",
       icon: <ProfileOutlined />,
-      label: <Link to="/profile">Thông tin cá nhân</Link>,
+      label: <Link to="/admin/profile">Thông tin cá nhân</Link>,
     },
   ];
 
