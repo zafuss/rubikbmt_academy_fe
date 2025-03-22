@@ -1,0 +1,24 @@
+@import '../constants/colors.js';
+.pageContainer {
+    padding: 24px;
+    background: var(--contentBackground);;
+    min-height: 100vh;
+  }
+  
+  .headerSection {
+    margin-bottom: 24px;
+  }
+  
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $layout-background;
+    margin: 0;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 8px 0 0;
+  }
+  

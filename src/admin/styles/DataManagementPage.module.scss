@@ -1,0 +1,22 @@
+.pageContainer {
+    padding: 24px;
+    background: #f0f2f5;
+    min-height: 100vh;
+  }
+  
+  .headerSection {
+    margin-bottom: 24px;
+  }
+  
+  .title {
+    font-size: 28px;
+    font-weight: 700;
+    color:  var(--primary);
+    margin: 0;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 8px 0 0;
+  }
