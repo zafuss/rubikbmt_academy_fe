@@ -27,7 +27,7 @@ body {
 // Sections
 .section {
     color: $primary-color;
-    height: 100vh;
+   
     padding: $section-padding;
     h1, p {
         color: $primary-color;
@@ -40,7 +40,7 @@ body {
 .introSection {
     @extend .section;
     background: linear-gradient(135deg, #dbf157, #a5c9e8);
-    
+    height: 100vh;
     display: flex;
     justify-content: center; /* Căn giữa theo chiều ngang */
     align-items: center; /* Căn giữa theo chiều dọc */
@@ -160,3 +160,146 @@ body {
 //         width: 35vh;
 //     }
 // }
+
+// Add to homepage_style.module.scss
+
+// Mentors Section
+.mentorsSection {
+  @extend .section;
+  background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
+  text-align: center;
+
+  .headerWrapper {
+    background: linear-gradient(90deg, #fed44c, #30ade3, #b855fe);
+    h1 {
+      padding: 35px;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+    }
+  }
+
+  .mentorImage {
+    max-width: 90%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+  }
+}
+
+// In homepage_style.module.scss
+
+.socialMediaSection {
+  background: linear-gradient(to right, #b2d3f5, #e1e8f5);
+
+  h1 {
+    color: #2d676f;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    transition: background-color 0.2s linear;
+    &:hover {
+
+      background-color: #dee0e1;
+    }
+
+  }
+
+  .icon {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+
+  .card-title {
+    color: #024057;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    text-align: center;
+  }
+
+  a {
+    text-decoration: none;
+    color: #4d4d4d;
+    &:hover {
+      color: #024057;
+    }
+  }
+}
+
+// Shopee Section
+.shopeeSection {
+  @extend .section;
+  background: linear-gradient(135deg, #f5d5b1, #e18080);
+  text-align: center;
+
+  h1 {
+    font-weight: bold;
+  }
+
+  .imageContainer {
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+      object-fit: cover;
+    }
+  }
+}
+
+// About Section
+// In homepage_style.module.scss
+
+.aboutSection {
+  background: linear-gradient(135deg, #f0f4f9, #f7e7e1);
+  color: #2d676f;
+
+  h1 {
+    color: #2d676f;
+    font-weight: bold;
+  }
+
+  h3 {
+    color: #2d676f;
+    font-weight: bold;
+  }
+
+  p {
+    color: #2d676f;
+    font-size: 16px;
+  }
+
+  .circleImage {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 5px solid #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .info {
+    display: inline-block;
+    width: auto;
+    transition: transform 0.3s ease;
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// Info hover effect
+.info {
+  display: inline-block;
+  width: auto;
+  transition: transform 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
