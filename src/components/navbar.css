@@ -1,28 +1,23 @@
-/* Color of the links BEFORE scroll */
-.navbar-scroll .nav-link,
-.navbar-scroll .navbar-toggler-icon,
-.navbar-scroll .navbar-brand {
-    color: #fff;
-}
+.navbar {
+    background: transparent !important; /* Fully transparent background */
+    backdrop-filter: blur(5px); /* Optional: Subtle blur effect */
+    box-shadow: none !important; /* Remove shadow completely */
+  }
+  
+  .nav-link {
+    font-weight: 500;
+    padding: 10px 20px !important;
+    color: #000 !important; /* Change text color to black */
+    transition: color 0.3s ease;
+  }
+  
+  .nav-logo {
+    /* No border-radius or transform effects as per previous request */
+  }
+  
+  /* Optional: Change text color on hover */
 
-/* Color of the links AFTER scroll */
-.navbar-scrolled .nav-link,
-.navbar-scrolled .navbar-toggler-icon,
-.navbar-scrolled .navbar-brand {
-    color: #fff;
-}
-
-/* Color of the navbar AFTER scroll */
-.navbar-scroll,
-.navbar-scrolled {
-    background-color: #cbbcb1;
-}
-
-.mask-custom {
-    backdrop-filter: blur(5px);
-    background-color: rgba(255, 255, 255, .15);
-}
-
-.navbar-brand {
-    letter-spacing: 3px;
-}
+  /* Ensure the toggler icon is visible on transparent background */
+  .navbar-toggler-icon {
+    filter: invert(0); /* Change to black for visibility */
+  }
