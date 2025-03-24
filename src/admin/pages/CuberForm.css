@@ -1,0 +1,209 @@
+
+@font-face {
+    font-family: 'CanvaSans';
+    src: url('../assets/fonts/CanvaSans-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'CanvaSans';
+    src: url('../assets/fonts/CanvaSans-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'CanvaSans';
+    src: url('../assets/fonts/CanvaSans-BoldItalic.otf') format('opentype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+body {
+    font-family: 'CanvaSans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.a4-page {
+    width: 1050px; /* A4 ngang tại 72dpi */
+    height: auto; /* A4 dọc tại 72dpi */
+    background-image: url('../assets/images/background.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 20px auto;
+    padding: 20px 30px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    font-size: 24px;
+    line-height: 1.4;
+    position: relative;
+    color: #0055ad;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 5px;
+    padding: 20px 30px;
+}
+
+/* Áp dụng CSS grid */
+.parent {
+    display: grid;
+    grid-template-columns: 60% 40%; /* 60% for left (div2, div3), 40% for right (div5) */
+    grid-template-rows: auto auto auto 1fr;
+    gap: 13px;
+    flex: 1;
+        margin-right: 15px;
+}
+.div1 , .div2 , .div3, .div5, .div6{
+    position:relative;    
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+}
+.div1 {
+    margin-top: 90px;
+    grid-column: span 2 / span 2;
+
+}
+
+.div2 {
+    grid-row-start: 2;
+}
+
+.div3 {
+    grid-column-start: 1;
+    grid-row-start: 3;
+}
+
+.div5 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    grid-row-start: 2;
+    position: relative;
+}
+
+.div5 h3 {
+    position: absolute;
+    right: -150px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    transform-origin: center;
+    white-space: nowrap;
+    margin: 0;
+    font-size: 24px; /* Reduced font size */
+}
+
+.div5 .items {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.div5 .item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1px; /* Reduced margin to shrink spacing between items */
+    font-size: 24px; /* Reduced font size */
+}
+
+.div5 .item::before {
+    content: '';
+    display: inline-block;
+    width: 12px; /* Slightly smaller bullet */
+    height: 12px;
+    background-color: #00A1D6;
+    margin-right: 25px;
+}
+
+/* Style for the divider */
+.div5 hr {
+    border: none;
+    border-top: 1px dashed #00A1D6; /* Dashed line matching the image */
+    margin: 5px 0;
+}
+
+.div6 {
+    grid-column: span 2 / span 2;
+    grid-row-start: 4;
+    margin-bottom: 15px;
+}
+
+h1 {    
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #0055ad;
+    font-weight: 800;
+}
+h2 {
+    font-size: 24px;
+    margin: 0;
+    margin-bottom: 5px;
+    color: #0055ad;
+    font-weight: 800;
+}
+h3 {
+    font-size: 24px;
+    color: #0055ad;
+    font-weight: 800;
+}
+.section {
+    margin-bottom: 15px;
+}
+.section label {
+    display: inline-block;
+    width: 100px;
+    color: #0055ad;
+    font-size: 24px;
+}
+.section .input-line {
+    border-bottom: 1px solid #00A1D6;
+    display: inline-block;
+    width: 200px;
+    height: 15px;
+    vertical-align: bottom;
+}
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+}
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+.grid-item {
+    padding-bottom: 3px;
+    color: #0055ad;
+    font-size: 24px;
+}
+.skills-grid, .cube-skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 50px;
+    gap: 5px;
+    align-items: center;
+}
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.progress-bar {
+    width: 300px;
+    height: 15px;
+    border: 1px solid #00A1D6;
+
+    background-color: #00A1D6;
+    border-radius: 2px;
+}
+.divider {
+    font-weight: 100;
+    color: #00A1D6;
+}

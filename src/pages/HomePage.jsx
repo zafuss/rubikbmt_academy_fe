@@ -1,11 +1,11 @@
 import React from "react";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
-import IntroSection from "../components/HomePage/IntroSection";
-import MentorsSection from "../components/HomePage/MentorsSection";
-import AboutSection from "../components/HomePage/AboutSection";
-import ShopeeSection from "../components/HomePage/ShopeeSection";
-import SocialMediaSection from "../components/HomePage/SocialMediaSection";
+import NavBar from "../components/Shared/NavBar";
+import Footer from "../components/Shared/Footer";
+import IntroSection from "../components/HomePage/Sections/IntroSection";
+import MentorsSection from "../components/HomePage/Sections/MentorsSection";
+import AboutSection from "../components/HomePage/Sections/AboutSection";
+import ShopeeSection from "../components/HomePage/Sections/ShopeeSection";
+import SocialMediaSection from "../components/HomePage/Sections/SocialMediaSection";
 
 function HomePage() {
   return (

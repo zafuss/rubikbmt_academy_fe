@@ -14,11 +14,27 @@ import AddOneOnOneClass from "./admin/pages/AddOneOnOneClass";
 import colors from "./admin/constants/colors.js";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import RubikForm from "./admin/pages/CuberForm";
+import CuberForm from "./admin/pages/CuberForm";
 const root = document.documentElement;
 
 Object.keys(colors).forEach((key) => {
   root.style.setProperty(`--${key}`, colors[key]);
 });
+
+const mockData = {
+  parent: { name: "Nguyễn Văn A", phone: "0901234567", address: "Hà Nội" },
+  student: { name: "Nguyễn Văn B", birthYear: "2010", course: "Cơ bản" },
+  skills: {
+    focus: 80,
+    memory: 70,
+    perseverance: 90,
+    reflexes: 85,
+    dexterity: 75,
+    creativity: 60,
+  },
+  cubeSkills: { cross: 80, f2l: 70, oll: 85, pll: 90, fingerTrick: 75 },
+};
 
 function ScrollToHashElement() {
   const { hash } = useLocation();
@@ -42,6 +58,7 @@ function App() {
         <ScrollToHashElement />
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="/cuber-form" element={<CuberForm />}></Route>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin" element={<Layout />}>
