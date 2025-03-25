@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from "react";
-// import { useReactToPrint } from "react-to-print";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import "./CuberForm.css";
@@ -42,7 +41,6 @@ const mockData = {
 const CuberForm = () => {
   const componentRef = useRef(null);
 
-  // Log to ensure ref is set
   useEffect(() => {
     if (componentRef.current) {
       console.log("Component ref is set:", componentRef.current);
@@ -50,16 +48,6 @@ const CuberForm = () => {
       console.log("Component ref is NOT set");
     }
   }, []);
-
-  //   const handlePrint = useReactToPrint({
-  //     content: () => {
-  //       if (!componentRef.current) {
-  //         console.error("No content to print: componentRef.current is null");
-  //         return null;
-  //       }
-  //       return componentRef.current;
-  //     },
-  //   });
 
   const handleExportPDF = () => {
     const input = componentRef.current;
@@ -93,25 +81,14 @@ const CuberForm = () => {
   };
 
   return (
-    <div>
+    <div className="cuberFormScope">
       <div className="action-buttons">
-        {/* <button
-          onClick={() => {
-            if (componentRef.current) {
-              handlePrint();
-            } else {
-              console.error("Cannot print: componentRef.current is null");
-            }
-          }}
-        >
-          In
-        </button> */}
         <button onClick={handleExportPDF}>Xuất PDF</button>
         <button onClick={handleExportPNG}>Xuất PNG</button>
       </div>
       <div ref={componentRef} className="a4-page">
         <div className="parent">
-          <div className="container div1">
+          <div className="cuber-container div1">
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <div style={{ width: "48%" }}>
                 <h2>Phụ huynh</h2>
@@ -139,7 +116,7 @@ const CuberForm = () => {
               </div>
             </div>
           </div>
-          <div className="container div2">
+          <div className="cuber-container div2">
             <h2>Kỹ năng</h2>
             <div className="skills-grid">
               {Object.entries(mockData.skills).map(
@@ -156,7 +133,7 @@ const CuberForm = () => {
               )}
             </div>
           </div>
-          <div className="container div3">
+          <div className="cuber-container div3">
             <h2>Cube Skills</h2>
             <div className="cube-skills-grid">
               {Object.entries(mockData.cubeSkills).map(
@@ -173,7 +150,7 @@ const CuberForm = () => {
               )}
             </div>
           </div>
-          <div className="container div5 right-column">
+          <div className="cuber-container div5 right-column">
             <h3>Các hạng mục thi đấu quốc tế (WCA)</h3>
             <div className="items">
               {[
@@ -203,7 +180,7 @@ const CuberForm = () => {
               ))}
             </div>
           </div>
-          <div className="container div6">
+          <div className="cuber-container div6">
             <h2>Lộ Trình</h2>
             <div className="schedule">
               {mockData.schedule.map((lesson, i) => (
