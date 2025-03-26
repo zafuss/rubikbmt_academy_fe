@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import "./CuberForm.css";
+import "../styles/CuberForm.css";
 
 const mockData = {
   parent: { name: "Nguyễn Văn A", phone: "0987654321", address: "Hà Nội" },

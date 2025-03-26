@@ -14,8 +14,9 @@ import AddOneOnOneClass from "./admin/pages/AddOneOnOneClass";
 import colors from "./admin/constants/colors.js";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import RubikForm from "./admin/pages/CuberForm";
 import CuberForm from "./admin/pages/CuberForm";
+import store from "./store/config/store";
+import { Provider } from "react-redux";
 const root = document.documentElement;
 
 Object.keys(colors).forEach((key) => {
@@ -55,24 +56,26 @@ function App() {
   return (
     <BrowserRouter>
       <React.StrictMode>
-        <ScrollToHashElement />
-        <Routes>
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/cuber-form" element={<CuberForm />}></Route>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<Layout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="classes/list" element={<ClassList />} />
-            <Route path="classes/add/mass" element={<AddMassClass />} />
-            <Route
-              path="classes/add/one-on-one"
-              element={<AddOneOnOneClass />}
-            />
-          </Route>
-        </Routes>
+        <Provider store={store}>
+          <ScrollToHashElement />
+          <Routes>
+            <Route path="/" element={<HomePage />}></Route>
+            <Route path="/cuber-form" element={<CuberForm />}></Route>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="classes/list" element={<ClassList />} />
+              <Route path="classes/add/mass" element={<AddMassClass />} />
+              <Route
+                path="classes/add/one-on-one"
+                element={<AddOneOnOneClass />}
+              />
+            </Route>
+          </Routes>
+        </Provider>
       </React.StrictMode>
     </BrowserRouter>
   );
