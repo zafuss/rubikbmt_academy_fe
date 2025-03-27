@@ -64,11 +64,11 @@ const MainLayout = () => {
               },
               {
                 key: "5",
-                label: <Link to="/admin/classes/list">Quản lý giáo viên</Link>,
+                label: <Link to="/admin/mentors">Quản lý giáo viên</Link>,
               },
               {
                 key: "6",
-                label: <Link to="/admin/classes/list">Quản lý học viên</Link>,
+                label: <Link to="/admin/students">Quản lý học viên</Link>,
               },
               {
                 key: "7",
@@ -77,24 +77,16 @@ const MainLayout = () => {
                   {
                     key: "8",
                     label: (
-                      <Link to="/admin/classes/list">Quản lý khoá học</Link>
+                      <Link to="/admin/courses">Quản lý khoá học</Link>
                     ),
                   },
                   {
                     key: "9",
-                    label: <Link to="/admin/classes/list">Quản lý bộ môn</Link>,
+                    label: <Link to="/admin/subjects">Quản lý bộ môn</Link>,
                   },
                   {
                     key: "10",
-                    label: <Link to="/admin/classes/list">Quản lý độ khó</Link>,
-                  },
-                  {
-                    key: "11",
-                    label: (
-                      <Link to="/admin/classes/list">
-                        Quản lý đánh giá trình độ
-                      </Link>
-                    ),
+                    label: <Link to="/admin/difficulties">Quản lý độ khó</Link>,
                   },
                 ],
               },
