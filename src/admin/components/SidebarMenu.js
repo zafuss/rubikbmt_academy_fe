@@ -1,8 +1,9 @@
-import { Layout, Menu } from "antd"; // Import Layout
+import { Layout, Menu } from "antd";
 import styled from "styled-components";
 import colors from "../constants/colors";
+import React from "react";
 
-const { Sider } = Layout; // Destructure Sider from Layout
+const { Sider } = Layout;
 
 const StyledSider = styled(Sider)`
   background: ${colors.primary};
@@ -37,9 +38,18 @@ const StyledSider = styled(Sider)`
   }
 `;
 
-const SidebarMenu = ({ menuItems, children }) => (
-  <StyledSider width={250}>
-    {children}
+const SidebarMenu = ({ menuItems, children, collapsed, onCollapse }) => (
+  <StyledSider
+    width={250}
+    collapsible
+    collapsed={collapsed}
+    onCollapse={onCollapse}
+    breakpoint="lg"
+    collapsedWidth={80}
+    trigger={null}
+  >
+    {React.cloneElement(children, { collapsed })}{" "}
+    {/* Pass collapsed to children */}
     <Menu
       theme="dark"
       mode="inline"
@@ -48,5 +58,4 @@ const SidebarMenu = ({ menuItems, children }) => (
     />
   </StyledSider>
 );
-
 export default SidebarMenu;

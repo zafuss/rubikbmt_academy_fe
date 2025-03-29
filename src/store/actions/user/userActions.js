@@ -241,12 +241,6 @@ export const logoutUser = () => async (dispatch) => {
   }
 };
 
-export const resetLogoutState = () => {
-  return {
-    type: RESET_LOGOUT_STATE,
-  };
-};
-
 const fetchUserListRequest = () => ({ type: FETCH_USER_LIST_REQUEST });
 const fetchUserListSuccess = (users) => ({
   type: FETCH_USER_LIST_SUCCESS,
@@ -267,4 +261,10 @@ export const fetchUserList = () => async (dispatch) => {
   } catch (e) {
     handleApiError(dispatch, fetchUserListFailure, e);
   }
+};
+
+export const resetLogoutState = () => {
+  return {
+    type: RESET_LOGOUT_STATE,
+  };
 };

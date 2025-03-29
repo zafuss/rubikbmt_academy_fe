@@ -22,6 +22,7 @@ import { Provider } from "react-redux";
 import SubjectManagement from "./admin/pages/SubjectManagement";
 import CourseManagement from "./admin/pages/CourseManagement";
 import DifficultyManagement from "./admin/pages/DifficultyManagement";
+import ProtectedRoute from "./admin/components/ProtectedRoute";
 const root = document.documentElement;
 
 Object.keys(colors).forEach((key) => {
@@ -54,7 +55,14 @@ function App() {
             <Route path="/cuber-form" element={<CuberForm />}></Route>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/admin" element={<Layout />}>
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
               <Route index element={<Dashboard />} />
               <Route path="users" element={<UserManagement />} />
               <Route path="mentors" element={<MentorManagement />} />

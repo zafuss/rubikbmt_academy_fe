@@ -1,5 +1,6 @@
+// src/admin/components/MainLayout.jsx
 import React, { Component } from "react";
-import { Layout as AntLayout, Dropdown, message, Spin } from "antd";
+import { Layout as AntLayout, Dropdown, message } from "antd";
 import { DashboardOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, Outlet } from "react-router-dom";
 import UserInfoCard from "./UserInfoCard";
@@ -9,7 +10,6 @@ import "../styles/admin.css";
 import withNavigate from "src/store/HOC/withNavigate";
 import { connect } from "react-redux";
 import {
-  fetchUser,
   logoutUser,
   resetLogoutState,
 } from "src/store/actions/user/userActions";
@@ -19,54 +19,86 @@ const { Content } = AntLayout;
 class MainLayout extends Component {
   constructor(props) {
     super(props);
+    console.log("Constructor - props.userInfo:", props.userInfo);
     this.state = {
-      userInfo: {
-        name: "Nguyen Van A",
-        avatar: null,
-        roles: ["Admin", "Giáo viên"],
-        currentRole: "Admin",
-      },
+      userInfo: props.userInfo
+        ? {
+            name:
+              `${props.userInfo.firstName || ""} ${
+                props.userInfo.lastName || ""
+              }`.trim() || "Người dùng",
+            avatar: props.userInfo.avatar || null,
+            roles: props.roles || ["Admin"],
+            currentRole: props.roles?.[0] || "Admin",
+          }
+        : null,
+      collapsed: false,
     };
   }
 
   componentDidMount() {
-    this.props.fetchUser();
+    this.handleResize();
+    window.addEventListener("resize", this.handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleResize);
   }
 
   componentDidUpdate(prevProps) {
-    // Redirect to login if userInfo is null (e.g., not authenticated)
-    // console.log(this.props.userInfo);
+    console.log("componentDidUpdate triggered");
+    console.log("prevProps.userInfo:", prevProps.userInfo);
+    console.log("this.props.userInfo:", this.props.userInfo);
+
     if (this.props.userInfo === undefined) {
+      console.log("userInfo undefined, navigating to /login");
       this.props.navigate("/login");
-      return; // Exit early to avoid further processing
+      return;
     }
 
-    if (this.props.logoutUserSuccess) {
+    if (this.props.logoutUserSuccess && !prevProps.logoutUserSuccess) {
       message.success("Đăng xuất thành công");
-      this.props.navigate("/login");
-      this.props.resetLogoutState();
-      return; // Exit early to avoid further processing
+      this.setState({ userInfo: null }); // Reset state.userInfo sau logout
+      return;
     }
 
-    if (this.props.logoutUserFailureMsg) {
+    if (this.props.logoutUserFailureMsg && !prevProps.logoutUserFailureMsg) {
       message.error(this.props.logoutUserFailureMsg);
       this.props.resetLogoutState();
     }
 
-    // Update state only if userInfo exists and has changed
-    if (this.props.userInfo && prevProps.userInfo !== this.props.userInfo) {
+    if (prevProps.userInfo !== this.props.userInfo) {
+      console.log("Updating state.userInfo with:", this.props.userInfo);
       this.setState({
-        userInfo: {
-          name: `${this.props.userInfo.firstName || ""} ${
-            this.props.userInfo.lastName || ""
-          }`,
-          avatar: this.props.userInfo.avatar || null,
-          roles: this.props.roles || ["Admin"], // Fallback to default role if roles are empty
-          currentRole: this.props.roles?.[0] || "Admin",
-        },
+        userInfo: this.props.userInfo
+          ? {
+              name:
+                `${this.props.userInfo.firstName || ""} ${
+                  this.props.userInfo.lastName || ""
+                }`.trim() || "Người dùng",
+              avatar: this.props.userInfo.avatar || null,
+              roles: this.props.roles || ["Admin"],
+              currentRole: this.props.roles?.[0] || "Admin",
+            }
+          : null,
       });
     }
   }
+
+  handleResize = () => {
+    const width = window.innerWidth;
+    if (width <= 768) {
+      this.setState({ collapsed: true });
+    } else {
+      this.setState({ collapsed: false });
+    }
+  };
+
+  toggleCollapse = () => {
+    this.setState((prevState) => ({
+      collapsed: !prevState.collapsed,
+    }));
+  };
 
   handleRoleChange = (role) => {
     this.setState((prevState) => ({
@@ -78,8 +110,13 @@ class MainLayout extends Component {
   };
 
   render() {
-    const { userInfo } = this.state;
-    const { navigate, loading } = this.props;
+    const { userInfo, collapsed } = this.state;
+    console.log("MainLayout render - state.userInfo:", userInfo);
+
+    if (!userInfo) {
+      console.log("MainLayout: userInfo is null, returning null");
+      return null;
+    }
 
     const roleMenuItems = userInfo.roles.map((role) => ({
       key: role,
@@ -166,33 +203,28 @@ class MainLayout extends Component {
       },
     ];
 
-    // Show loading spinner while fetching user data
-    if (loading) {
-      return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            background: "#f0f2f5",
-          }}
-        >
-          <Spin size="large" tip="Đang tải dữ liệu..." />
-        </div>
-      );
-    }
-
-    // Render the layout if userInfo is available
     return (
       <AntLayout style={{ minHeight: "100vh" }}>
-        <SidebarMenu menuItems={menuItems}>
+        <SidebarMenu
+          menuItems={menuItems}
+          collapsed={collapsed}
+          onCollapse={this.toggleCollapse}
+        >
           <Dropdown menu={{ items: roleMenuItems }} trigger={["click"]}>
-            <UserInfoCard userInfo={userInfo} roleMenuItems={roleMenuItems} />
+            <UserInfoCard
+              userInfo={userInfo}
+              roleMenuItems={roleMenuItems}
+              collapsed={collapsed}
+            />
           </Dropdown>
         </SidebarMenu>
         <AntLayout>
-          <HeaderSection userInfo={userInfo} userMenu={userMenu} />
+          <HeaderSection
+            userInfo={userInfo}
+            userMenu={userMenu}
+            collapsed={collapsed}
+            toggleCollapse={this.toggleCollapse}
+          />
           <Content
             style={{
               margin: "24px 16px",
@@ -220,7 +252,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: () => dispatch(fetchUser()),
     logoutUser: () => dispatch(logoutUser()),
     resetLogoutState: () => dispatch(resetLogoutState()),
   };

@@ -7,8 +7,9 @@ import { motion } from "framer-motion";
 import { Link, Navigate } from "react-router-dom";
 import colors from "../constants/colors";
 import { connect } from "react-redux";
-import { loginUser } from "src/store/actions/user/userActions";
+import { fetchUser, loginUser } from "src/store/actions/user/userActions";
 import { Alert } from "react-bootstrap";
+import withNavigate from "src/store/HOC/withNavigate";
 
 // Styled components
 const Container = styled.div`
@@ -89,6 +90,15 @@ class Login extends Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.loginSuccess && !prevProps.loginSuccess) {
+      this.props.fetchUser(); // Gọi fetchUser sau khi login thành công
+    }
+    if (this.props.userInfo && !prevProps.userInfo) {
+      this.props.navigate("/admin"); // Chuyển hướng sau khi có userInfo
+    }
+  }
+
   handleOnLogin = () => {
     const { email, password } = this.state;
     this.props.loginUser({ email, password });
@@ -128,9 +138,6 @@ class Login extends Component {
                 Đăng nhập
               </h2>
               <Form name="login">
-                {this.props.loginSuccess && (
-                  <Navigate to="/admin" replace={true}></Navigate>
-                )}
                 {this.props.loginFailure && (
                   <Alert variant="danger">
                     <div>
@@ -173,7 +180,7 @@ class Login extends Component {
                     onClick={this.handleOnLogin}
                     type="primary"
                     htmlType="submit"
-                    disabled={this.props.loading} // Vô hiệu hóa nút khi đang tải
+                    disabled={this.props.loading}
                   >
                     {this.props.loading ? (
                       <>
@@ -199,18 +206,24 @@ class Login extends Component {
     );
   }
 }
+
 const mapStateToProps = (state) => {
   return {
     loading: state.userReducer.loading,
     loginSuccess: state.userReducer.loginUserSuccess,
     loginFailure: state.userReducer.loginUserFailureMsg,
+    userInfo: state.userReducer.user,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     loginUser: (user) => dispatch(loginUser(user)),
+    fetchUser: () => dispatch(fetchUser()),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withNavigate(Login));

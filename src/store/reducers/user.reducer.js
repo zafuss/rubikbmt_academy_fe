@@ -1,4 +1,4 @@
-import { loginUser } from "../actions/user/userActions";
+import { loginUser, logoutUser } from "../actions/user/userActions";
 import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
@@ -39,7 +39,7 @@ const initState = {
   registerUserSuccess: false,
   updateUserSuccess: false,
   registerUserFailureMsg: "",
-  user: {},
+  user: null,
   updateUserFailureMsg: "",
   loginUserFailureMsg: "",
   loginUserSuccess: false,
@@ -120,6 +120,7 @@ function userReducer(state = initState, action) {
         loading: false,
         loginUserSuccess: true,
         userData: action.payload,
+        logoutUserSuccess: false,
       };
     case LOGIN_USER_FAILURE:
       return {
@@ -193,10 +194,12 @@ function userReducer(state = initState, action) {
         loading: true,
       };
     case LOGOUT_USER_SUCCESS:
+      console.log("Logout user success");
       return {
         ...state,
         loading: false,
         logoutUserSuccess: true,
+        user: null,
       };
     case LOGOUT_USER_FAILURE:
       return {
