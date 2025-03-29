@@ -1,10 +1,22 @@
+import React, { Component } from "react";
 import { Form, Input, Button, Card } from "antd";
-import { LockOutlined, UserOutlined, MailOutlined } from "@ant-design/icons";
+import {
+  // LockOutlined,
+  UserOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import styled from "styled-components";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import colors from "../constants/colors";
-// Reusing styled components từ Login
+import "@ant-design/v5-patch-for-react-19";
+import { connect } from "react-redux";
+import {
+  registerUser,
+  resetRegisterStateAction,
+} from "src/store/actions/user/userActions";
+import { Alert } from "react-bootstrap";
+
 const Container = styled.div`
   display: flex;
   height: 100vh;
@@ -74,129 +86,189 @@ const StyledButton = styled(Button)`
   }
 `;
 
-const Register = () => {
-  const onFinish = (values) => {
-    console.log("Register:", values);
-    // Thêm logic đăng ký tại đây
+class Register extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      phone: "",
+      email: "",
+    };
+  }
+
+  componentWillUnmount() {
+    this.props.resetRegisterState();
+  }
+
+  handleOnClickRegister = () => {
+    const user = {
+      phone: this.state.phone,
+      email: this.state.email,
+    };
+    this.props.registerUser(user);
   };
+  render() {
+    return (
+      <Container>
+        <LeftSection>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            style={{ textAlign: "center" }}
+          >
+            <GradientText>Đăng ký tài khoản</GradientText>
+            <p style={{ fontSize: "18px", color: "#d3e0ff" }}>
+              Vui lòng đăng ký tài khoản để sử dụng trang quản lý RubikBMT
+            </p>
+          </motion.div>
+        </LeftSection>
+        <RightSection>
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <StyledCard>
+              <h2
+                style={{
+                  textAlign: "center",
+                  marginBottom: 24,
+                  color: colors.primary,
+                }}
+              >
+                Đăng ký
+              </h2>
 
-  return (
-    <Container>
-      {/* Phần bên trái với ảnh nền và text */}
-      <LeftSection>
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          style={{ textAlign: "center" }}
-        >
-          <GradientText>Create Account</GradientText>
-          <p style={{ fontSize: "18px", color: "#d3e0ff" }}>
-            Sign up to experience Horizon UI.
-          </p>
-        </motion.div>
-      </LeftSection>
-
-      {/* Phần bên phải với form đăng ký */}
-      <RightSection>
-        <motion.div
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <StyledCard>
-            <h2
-              style={{
-                textAlign: "center",
-                marginBottom: 24,
-                color: colors.primary,
-              }}
-            >
-              Đăng ký
-            </h2>
-            <Form name="register" onFinish={onFinish}>
-              <Form.Item
-                name="username"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tài khoản!" },
-                ]}
-              >
-                <Input
-                  prefix={<UserOutlined />}
-                  placeholder="Tài khoản"
-                  size="large"
-                  style={{ borderRadius: 8 }}
-                />
-              </Form.Item>
-              <Form.Item
-                name="email"
-                rules={[
-                  {
-                    required: true,
-                    type: "email",
-                    message: "Vui lòng nhập email hợp lệ!",
-                  },
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined />}
-                  placeholder="Email"
-                  size="large"
-                  style={{ borderRadius: 8 }}
-                />
-              </Form.Item>
-              <Form.Item
-                name="password"
-                rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="Mật khẩu"
-                  size="large"
-                  style={{ borderRadius: 8 }}
-                />
-              </Form.Item>
-              <Form.Item
-                name="confirmPassword"
-                dependencies={["password"]}
-                rules={[
-                  { required: true, message: "Vui lòng xác nhận mật khẩu!" },
-                  ({ getFieldValue }) => ({
-                    validator(_, value) {
-                      if (!value || getFieldValue("password") === value) {
-                        return Promise.resolve();
-                      }
-                      return Promise.reject(
-                        new Error("Mật khẩu xác nhận không khớp!")
-                      );
+              <Form name="register">
+                {this.props.registerSuccess && (
+                  <Navigate to="/login" replace={true}></Navigate>
+                )}
+                {this.props.registerFailure && (
+                  <Alert variant="danger">
+                    <div>
+                      Lỗi đăng ký tài khoản: {this.props.registerFailure}
+                    </div>
+                  </Alert>
+                )}
+                <Form.Item
+                  name="phone"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập số điện thoại!" },
+                  ]}
+                >
+                  <Input
+                    prefix={<UserOutlined />}
+                    placeholder="Số điện thoại"
+                    size="large"
+                    style={{ borderRadius: 8 }}
+                    value={this.state.phone}
+                    onChange={(event) =>
+                      this.setState({ phone: event.target.value })
+                    }
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="email"
+                  rules={[
+                    {
+                      required: true,
+                      type: "email",
+                      message: "Vui lòng nhập email hợp lệ!",
                     },
-                  }),
-                ]}
-              >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="Xác nhận mật khẩu"
-                  size="large"
-                  style={{ borderRadius: 8 }}
-                />
-              </Form.Item>
-              <Form.Item>
-                <StyledButton type="primary" htmlType="submit">
-                  Đăng ký
-                </StyledButton>
-              </Form.Item>
-              <div style={{ textAlign: "center" }}>
-                <span>Đã có tài khoản? </span>
-                <Link to="/login" style={{ color: colors.primary }}>
-                  Đăng nhập ngay
-                </Link>
-              </div>
-            </Form>
-          </StyledCard>
-        </motion.div>
-      </RightSection>
-    </Container>
-  );
+                  ]}
+                >
+                  <Input
+                    prefix={<MailOutlined />}
+                    placeholder="Email"
+                    size="large"
+                    style={{ borderRadius: 8 }}
+                    value={this.state.email}
+                    onChange={(event) =>
+                      this.setState({ email: event.target.value })
+                    }
+                  />
+                </Form.Item>
+                {/* <Form.Item
+                  name="password"
+                  rules={[
+                    { required: true, message: "Vui lòng nhập mật khẩu!" },
+                  ]}
+                >
+                  <Input.Password
+                    prefix={<LockOutlined />}
+                    placeholder="Mật khẩu"
+                    size="large"
+                    style={{ borderRadius: 8 }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="confirmPassword"
+                  dependencies={["password"]}
+                  rules={[
+                    { required: true, message: "Vui lòng xác nhận mật khẩu!" },
+                    ({ getFieldValue }) => ({
+                      validator(_, value) {
+                        return !value || getFieldValue("password") === value
+                          ? Promise.resolve()
+                          : Promise.reject(
+                              new Error("Mật khẩu xác nhận không khớp!")
+                            );
+                      },
+                    }),
+                  ]}
+                >
+                  <Input.Password
+                    prefix={<LockOutlined />}
+                    placeholder="Xác nhận mật khẩu"
+                    size="large"
+                    style={{ borderRadius: 8 }}
+                  />
+                </Form.Item> */}
+                <Form.Item>
+                  <StyledButton
+                    onClick={this.handleOnClickRegister}
+                    type="primary"
+                    htmlType="submit"
+                    disabled={this.props.loading} // Vô hiệu hóa nút khi đang tải
+                  >
+                    {this.props.loading ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm"></span>{" "}
+                        Đang đăng ký...
+                      </>
+                    ) : (
+                      "Đăng ký"
+                    )}
+                  </StyledButton>
+                </Form.Item>
+                <div style={{ textAlign: "center" }}>
+                  <span>Đã có tài khoản? </span>
+                  <Link to="/login" style={{ color: colors.primary }}>
+                    Đăng nhập ngay
+                  </Link>
+                </div>
+              </Form>
+            </StyledCard>
+          </motion.div>
+        </RightSection>
+      </Container>
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    loading: state.userReducer.loading,
+    registerSuccess: state.userReducer.registerUserSuccess,
+    registerFailure: state.userReducer.registerUserFailureMsg,
+  };
 };
 
-export default Register;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    registerUser: (user) => dispatch(registerUser(user)),
+    resetRegisterState: () => dispatch(resetRegisterStateAction()),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

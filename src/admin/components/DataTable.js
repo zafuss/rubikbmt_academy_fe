@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"; // Thêm useEffect vào import
+import { useState, useEffect } from "react";
 import {
   Table,
   Button,
@@ -26,6 +26,7 @@ const StyledCard = styled.div`
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow-x: auto; /* Thêm cuộn ngang cho toàn bộ card nếu cần */
 `;
 
 const DataTable = ({
@@ -120,9 +121,12 @@ const DataTable = ({
       });
   };
 
+  // Thêm cột hành động
   const actionColumn = {
     title: "Hành động",
     key: "action",
+    fixed: "right", // Giữ cột hành động cố định bên phải
+    width: 120, // Giới hạn chiều rộng cột hành động
     render: (_, record) => (
       <Space>
         <Button
@@ -144,6 +148,12 @@ const DataTable = ({
       </Space>
     ),
   };
+
+  // Tự động thêm width cho các cột nếu chưa có
+  const enhancedColumns = columns.map((col) => ({
+    ...col,
+    width: col.width || 150, // Chiều rộng mặc định nếu không được chỉ định
+  }));
 
   return (
     <StyledCard>
@@ -174,7 +184,7 @@ const DataTable = ({
 
       <Spin spinning={loading}>
         <Table
-          columns={[...columns, actionColumn]}
+          columns={[...enhancedColumns, actionColumn]}
           dataSource={filteredData}
           pagination={{
             ...pagination,
@@ -182,6 +192,7 @@ const DataTable = ({
             onChange: (page, pageSize) =>
               setPagination({ ...pagination, current: page, pageSize }),
           }}
+          scroll={{ x: "max-content" }} // Kích hoạt cuộn ngang
         />
       </Spin>
 

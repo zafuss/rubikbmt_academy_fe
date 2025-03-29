@@ -28,20 +28,6 @@ Object.keys(colors).forEach((key) => {
   root.style.setProperty(`--${key}`, colors[key]);
 });
 
-const mockData = {
-  parent: { name: "Nguyễn Văn A", phone: "0901234567", address: "Hà Nội" },
-  student: { name: "Nguyễn Văn B", birthYear: "2010", course: "Cơ bản" },
-  skills: {
-    focus: 80,
-    memory: 70,
-    perseverance: 90,
-    reflexes: 85,
-    dexterity: 75,
-    creativity: 60,
-  },
-  cubeSkills: { cross: 80, f2l: 70, oll: 85, pll: 90, fingerTrick: 75 },
-};
-
 function ScrollToHashElement() {
   const { hash } = useLocation();
 
