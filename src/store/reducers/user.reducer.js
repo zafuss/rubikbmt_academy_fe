@@ -1,4 +1,3 @@
-import { loginUser, logoutUser } from "../actions/user/userActions";
 import {
   FETCH_USERS_REQUEST,
   FETCH_USERS_SUCCESS,
@@ -30,6 +29,12 @@ import {
   FETCH_USER_LIST_FAILURE,
   FETCH_USER_LIST_REQUEST,
   FETCH_USER_LIST_SUCCESS,
+  UPDATE_USER_STATUS_FAILURE,
+  UPDATE_USER_STATUS_REQUEST,
+  UPDATE_USER_STATUS_SUCCESS,
+  ADD_USER_REQUEST,
+  ADD_USER_SUCCESS,
+  ADD_USER_FAILURE,
 } from "../actions/user/userTypes";
 
 const initState = {
@@ -53,6 +58,12 @@ const initState = {
   userList: [],
   getUserListSuccess: false,
   getUserListFailureMsg: "",
+  updatingUserStatus: false,
+  updateUserStatusSuccess: false,
+  updateUserStatusFailureMsg: "",
+  addingUser: false,
+  addUserSuccess: false,
+  addUserFailureMsg: "",
 };
 
 function userReducer(state = initState, action) {
@@ -137,7 +148,6 @@ function userReducer(state = initState, action) {
       return {
         loading: false,
         updateUserSuccess: true,
-        user: action.payload,
       };
     case UPDATE_USER_FAILURE:
       return {
@@ -231,6 +241,46 @@ function userReducer(state = initState, action) {
         ...state,
         gettingUserList: false,
         getUserListFailureMsg: action.payload,
+      };
+    case UPDATE_USER_STATUS_REQUEST:
+      return {
+        ...state,
+        updatingUserStatus: true,
+        updateUserStatusSuccess: false,
+        updateUserStatusFailureMsg: "",
+      };
+    case UPDATE_USER_STATUS_SUCCESS:
+      return {
+        ...state,
+        updatingUserStatus: false,
+        updateUserStatusSuccess: true,
+      };
+    case UPDATE_USER_STATUS_FAILURE:
+      return {
+        ...state,
+        updatingUserStatus: false,
+        updateUserStatusSuccess: false,
+        updateUserStatusFailureMsg: action.payload,
+      };
+    case ADD_USER_REQUEST:
+      return {
+        ...state,
+        addingUser: true,
+        addUserSuccess: false,
+        addUserFailureMsg: "",
+      };
+    case ADD_USER_SUCCESS:
+      return {
+        ...state,
+        addingUser: false,
+        addUserSuccess: true,
+      };
+    case ADD_USER_FAILURE:
+      return {
+        ...state,
+        addingUser: false,
+        addUserSuccess: false,
+        addUserFailureMsg: action.payload,
       };
     default:
       return state;

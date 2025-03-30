@@ -31,6 +31,12 @@ const {
   FETCH_USER_LIST_FAILURE,
   FETCH_USER_LIST_REQUEST,
   FETCH_USER_LIST_SUCCESS,
+  UPDATE_USER_STATUS_FAILURE,
+  UPDATE_USER_STATUS_REQUEST,
+  UPDATE_USER_STATUS_SUCCESS,
+  ADD_USER_REQUEST,
+  ADD_USER_SUCCESS,
+  ADD_USER_FAILURE,
 } = require("./userTypes");
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -117,24 +123,24 @@ export const fetchUsers = (status) => async (dispatch) => {
 };
 
 const updateUserRequest = () => ({ type: UPDATE_USER_REQUEST });
-const updateUserSuccess = (user) => ({
+const updateUserSuccess = () => ({
   type: UPDATE_USER_SUCCESS,
-  payload: user,
 });
 const updateUserFailure = (error) => ({
   type: UPDATE_USER_FAILURE,
   payload: error,
 });
 
-export const editUser = (user) => async (dispatch) => {
+export const updateUser = (user) => async (dispatch) => {
   dispatch(updateUserRequest());
-  const apiUrl = `${BASE_URL}${user.id}`;
+  const apiUrl = `${BASE_URL}auth/update-profile`;
   try {
-    const res = await customAxios.put(apiUrl, user, {
+    const res = await customAxios.post(apiUrl, user, {
       withCredentials: true,
     });
     if (res.status === 200) {
-      dispatch(updateUserSuccess(res.data));
+      dispatch(updateUserSuccess());
+      dispatch(fetchUser());
     }
   } catch (e) {
     handleApiError(dispatch, updateUserFailure, e);
@@ -267,4 +273,76 @@ export const resetLogoutState = () => {
   return {
     type: RESET_LOGOUT_STATE,
   };
+};
+
+export const updateUserStatusRequest = () => ({
+  type: UPDATE_USER_STATUS_REQUEST,
+});
+export const updateUserStatusSuccess = () => ({
+  type: UPDATE_USER_STATUS_SUCCESS,
+});
+export const updateUserStatusFailure = (error) => ({
+  type: UPDATE_USER_STATUS_FAILURE,
+  payload: error,
+});
+
+export const updateUserStatus = (email, status) => async (dispatch) => {
+  try {
+    dispatch(updateUserStatusRequest());
+    let apiUrl = "";
+    if (status === 1) {
+      apiUrl = BASE_URL + `auth/confirm-account`;
+    } else {
+      apiUrl = BASE_URL + `auth/disable-account`;
+    }
+    const res = await customAxios.post(
+      apiUrl,
+      { email },
+      { withCredentials: true }
+    );
+    if (res.status === 200) {
+      dispatch(updateUserStatusSuccess());
+      dispatch(fetchUserList());
+    } else {
+      dispatch(updateUserStatusFailure(res.data.message));
+    }
+  } catch (e) {
+    handleApiError(dispatch, fetchUserListFailure, e);
+  }
+};
+export const addUserRequest = () => ({
+  type: ADD_USER_REQUEST,
+});
+export const addUserSuccess = () => ({
+  type: ADD_USER_SUCCESS,
+});
+export const addUserFailure = (error) => ({
+  type: ADD_USER_FAILURE,
+  payload: error,
+});
+
+export const addUser = (user) => async (dispatch) => {
+  try {
+    console.log(user);
+    const res = await customAxios.post(
+      BASE_URL + `auth/add-user`,
+      {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        parentName: user.parentName,
+        email: user.email,
+        roles: user.roles,
+      },
+      { withCredentials: true }
+    );
+    if (res.status === 200 || res.status === 201) {
+      dispatch(addUserSuccess());
+      dispatch(fetchUserList());
+    } else {
+      dispatch(addUserFailure(res.data.message));
+    }
+  } catch (e) {
+    handleApiError(dispatch, addUserFailure, e);
+  }
 };

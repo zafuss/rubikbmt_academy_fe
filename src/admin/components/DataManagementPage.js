@@ -14,6 +14,7 @@ class DataManagementPage extends Component {
       onAdd,
       onUpdate,
       onDelete,
+      loading,
       formFields,
     } = this.props;
 
@@ -33,6 +34,7 @@ class DataManagementPage extends Component {
               <DataTable
                 columns={columns}
                 data={data}
+                loading={loading}
                 onAdd={onAdd}
                 onUpdate={onUpdate}
                 onDelete={onDelete}

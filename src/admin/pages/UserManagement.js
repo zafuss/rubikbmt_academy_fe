@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import DataManagementPage from "../components/DataManagementPage.js";
-import {
-  getUsers,
-  addUser,
-  updateUser,
-  deleteUser,
-} from "../services/userService.js";
+import { deleteUser } from "../services/userService.js";
 import { connect } from "react-redux";
-import { fetchUserList } from "src/store/actions/user/userActions.js";
+import {
+  addUser,
+  fetchUserList,
+  updateUser,
+  updateUserStatus,
+} from "src/store/actions/user/userActions.js";
+import { Space, Button, message, Spin } from "antd";
 
 class UserManagement extends Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class UserManagement extends Component {
     this.state = {
       users: [],
       columns: [],
+      updatingEmail: null,
     };
   }
 
@@ -41,6 +43,30 @@ class UserManagement extends Component {
         users: usersData,
         columns: dynamicColumns,
       });
+    }
+
+    if (
+      !prevProps.updateUserStatusSuccess &&
+      this.props.updateUserStatusSuccess
+    ) {
+      message.success("Cập nhật trạng thái thành công!");
+      this.props.fetchUserList();
+    }
+
+    if (
+      !prevProps.updateUserStatusFailure &&
+      this.props.updateUserStatusFailure
+    ) {
+      message.error(
+        this.props.updateUserStatusFailure || "Cập nhật trạng thái thất bại!"
+      );
+    }
+
+    if (
+      this.props.updatingUserStatus !== prevProps.updatingUserStatus &&
+      !this.props.updatingUserStatus
+    ) {
+      this.setState({ updatingEmail: null });
     }
   }
 
@@ -140,6 +166,78 @@ class UserManagement extends Component {
           return "Chưa cập nhật";
         },
       },
+      {
+        title: "Vai trò",
+        key: "roles",
+        width: 200,
+        render: (text, record) => {
+          console.log(record);
+          return record.roles ? record.roles.join(", ") : "Chưa cập nhật";
+        },
+      },
+      {
+        title: "Trạng thái",
+        key: "status",
+        width: 150,
+        render: (text, record) => {
+          const getStatusInfo = (status) => {
+            switch (status) {
+              case 1:
+                return {
+                  text: "Đang hoạt động",
+                  color: "#52c41a",
+                  buttonText: "Vô hiệu hóa",
+                };
+              case 0:
+                return {
+                  text: "Chưa xác nhận",
+                  color: "#faad14",
+                  buttonText: "Xác nhận",
+                };
+              case -1:
+                return {
+                  text: "Đã vô hiệu hóa",
+                  color: "#ff4d4f",
+                  buttonText: "Kích hoạt",
+                };
+              default:
+                return {
+                  text: "Chưa xác định",
+                  color: "#999999",
+                  buttonText: "Xác nhận",
+                };
+            }
+          };
+
+          const statusInfo = getStatusInfo(record.status);
+
+          return (
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+            >
+              <span
+                style={{
+                  color: statusInfo.color,
+                  fontWeight: 500,
+                }}
+              >
+                {statusInfo.text}
+              </span>
+              <Button
+                type="primary"
+                danger={record.status === 1}
+                size="small"
+                loading={this.state.updatingEmail === record.email}
+                onClick={() =>
+                  this.handleUpdateStatus(record.email, record.status)
+                }
+              >
+                {statusInfo.buttonText}
+              </Button>
+            </div>
+          );
+        },
+      },
     ];
 
     return [sttColumn, ...columns];
@@ -147,7 +245,13 @@ class UserManagement extends Component {
 
   formFields = [
     {
-      name: "name",
+      name: "firstName",
+      label: "Họ",
+      placeholder: "Nhập họ",
+      rules: [{ required: true, message: "Vui lòng nhập họ!" }],
+    },
+    {
+      name: "lastName",
       label: "Tên",
       placeholder: "Nhập tên",
       rules: [{ required: true, message: "Vui lòng nhập tên!" }],
@@ -162,46 +266,42 @@ class UserManagement extends Component {
       ],
     },
     {
-      name: "role",
-      label: "Vai trò",
-      placeholder: "Chọn vai trò",
-      type: "select",
-      options: [
-        { value: "Admin", label: "Admin" },
-        { value: "Giáo viên", label: "Giáo viên" },
+      name: "phone",
+      label: "Số điện thoại",
+      placeholder: "Nhập số điện thoại",
+      rules: [
+        { required: true, message: "Vui lòng nhập số điện thoại!" },
+        { type: "text", message: "Số điện thoại không hợp lệ!" },
       ],
-      rules: [{ required: true, message: "Vui lòng chọn vai trò!" }],
+    },
+    {
+      name: "parentName",
+      label: "Tên phụ huynh",
+      placeholder: "Nhập tên phụ huynh",
+      rules: [{ type: "text", message: "Tên phụ huynh không hợp lệ!" }],
+    },
+    {
+      name: "roles",
+      label: "Vai trò",
+      type: "checkbox-group",
+      options: [
+        { value: "admin", label: "Admin" },
+        { value: "teacher", label: "Giáo viên" },
+        { value: "student", label: "Học sinh" },
+        { value: "parent", label: "Phụ huynh" },
+      ],
+      rules: [
+        { required: true, message: "Vui lòng chọn ít nhất một vai trò!" },
+      ],
     },
   ];
 
   handleAdd = (values) => {
-    return addUser(values).then((newUser) => {
-      const userWithKey = {
-        ...newUser,
-        key: newUser.id || newUser.email || Date.now(),
-      };
-      this.setState((prevState) => ({
-        users: [...prevState.users, userWithKey],
-        columns: this.generateColumns([...prevState.users, userWithKey]),
-      }));
-    });
+    this.props.addUser(values);
   };
 
-  handleUpdate = (key, values) => {
-    return updateUser(key, values).then((updatedUser) => {
-      const userWithKey = {
-        ...updatedUser,
-        key: updatedUser.id || updatedUser.email || key,
-      };
-      this.setState((prevState) => ({
-        users: prevState.users.map((user) =>
-          user.key === key ? userWithKey : user
-        ),
-        columns: this.generateColumns(
-          prevState.users.map((user) => (user.key === key ? userWithKey : user))
-        ),
-      }));
-    });
+  handleUpdate = (values) => {
+    this.props.updateUser(values);
   };
 
   handleDelete = (key) => {
@@ -216,6 +316,12 @@ class UserManagement extends Component {
     });
   };
 
+  handleUpdateStatus = (email, currentStatus) => {
+    const newStatus = currentStatus === 1 ? -1 : 1;
+    this.setState({ updatingEmail: email });
+    this.props.updateUserStatus(email, newStatus);
+  };
+
   render() {
     const { users, columns } = this.state;
 
@@ -225,11 +331,12 @@ class UserManagement extends Component {
         subtitle="Xem và quản lý danh sách người dùng trong hệ thống."
         columns={columns}
         data={users}
-        rowKey="key" // Chỉ định trường key
+        rowKey="key"
         onAdd={this.handleAdd}
         onUpdate={this.handleUpdate}
         onDelete={this.handleDelete}
         formFields={this.formFields}
+        loading={this.props.gettingUserList}
       />
     );
   }
@@ -238,15 +345,23 @@ class UserManagement extends Component {
 const mapStateToProps = (state) => {
   return {
     loading: state.userReducer.gettingUserList,
+    gettingUserList: state.userReducer.gettingUserList,
     getUserListSuccess: state.userReducer.getUserListSuccess,
     getUserListFailure: state.userReducer.getUserListFailureMsg,
     users: state.userReducer.userList,
+    updateUserStatusSuccess: state.userReducer.updateUserStatusSuccess,
+    updateUserStatusFailure: state.userReducer.updateUserStatusFailureMsg,
+    updatingUserStatus: state.userReducer.updatingUserStatus,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchUserList: () => dispatch(fetchUserList()),
+    updateUserStatus: (email, status) =>
+      dispatch(updateUserStatus(email, status)),
+    addUser: (values) => dispatch(addUser(values)),
+    updateUser: (values) => dispatch(updateUser(values)),
   };
 };
 

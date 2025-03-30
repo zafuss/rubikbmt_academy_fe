@@ -9,6 +9,7 @@ import {
   message,
   Spin,
   Space,
+  Checkbox,
 } from "antd";
 import {
   PlusOutlined,
@@ -32,6 +33,7 @@ const StyledCard = styled.div`
 const DataTable = ({
   columns,
   data,
+  loading = false,
   onAdd = () => {},
   onUpdate = () => {},
   onDelete = () => {},
@@ -41,7 +43,7 @@ const DataTable = ({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteKey, setDeleteKey] = useState(null);
   const [editingRecord, setEditingRecord] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [form] = Form.useForm();
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState(data);
@@ -67,6 +69,8 @@ const DataTable = ({
   };
 
   const showModal = (record = null) => {
+    console.log("record:", record);
+
     setEditingRecord(record);
     if (record) {
       form.setFieldsValue(record);
@@ -76,28 +80,40 @@ const DataTable = ({
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-    setLoading(true);
-    form
-      .validateFields()
-      .then((values) => {
-        const action = editingRecord
-          ? onUpdate(editingRecord.key, values)
-          : onAdd(values);
-        return action;
-      })
-      .then(() => {
-        message.success(
-          editingRecord ? "Cập nhật thành công!" : "Thêm mới thành công!"
-        );
-        setIsModalOpen(false);
-      })
-      .catch((error) => {
-        message.error(error.message || "Đã có lỗi xảy ra!");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const handleOk = async () => {
+    try {
+      console.log("1. Bắt đầu xử lý");
+      setModalLoading(true);
+
+      const values = await form.validateFields();
+      console.log("2. Form values:", values);
+
+      if (editingRecord) {
+        console.log("3a. Đang update...");
+        const updatedValues = {
+          ...values,
+          _id: editingRecord._id,
+        };
+        console.log("Updated values:", updatedValues);
+        await onUpdate(updatedValues);
+      } else {
+        console.log("3b. Đang thêm mới...");
+        await onAdd(values);
+      }
+
+      console.log("4. Thao tác hoàn thành");
+      message.success(
+        editingRecord ? "Cập nhật thành công!" : "Thêm mới thành công!"
+      );
+      setIsModalOpen(false);
+      form.resetFields();
+    } catch (error) {
+      console.error("5. Lỗi:", error);
+      message.error(error.message || "Đã có lỗi xảy ra!");
+    } finally {
+      console.log("6. Kết thúc");
+      setModalLoading(false);
+    }
   };
 
   const showDeleteConfirm = (key) => {
@@ -106,7 +122,7 @@ const DataTable = ({
   };
 
   const handleDeleteConfirm = () => {
-    setLoading(true);
+    setModalLoading(true);
     onDelete(deleteKey)
       .then(() => {
         message.success("Xóa thành công!");
@@ -115,7 +131,7 @@ const DataTable = ({
         message.error(error.message || "Đã có lỗi xảy ra!");
       })
       .finally(() => {
-        setLoading(false);
+        setModalLoading(false);
         setIsDeleteModalOpen(false);
         setDeleteKey(null);
       });
@@ -127,26 +143,28 @@ const DataTable = ({
     key: "action",
     fixed: "right", // Giữ cột hành động cố định bên phải
     width: 120, // Giới hạn chiều rộng cột hành động
-    render: (_, record) => (
-      <Space>
-        <Button
-          type="link"
-          style={{ color: colors.primary }}
-          onClick={() => showModal(record)}
-          disabled={loading}
-        >
-          Sửa
-        </Button>
-        <Button
-          type="link"
-          danger
-          onClick={() => showDeleteConfirm(record.key)}
-          disabled={loading}
-        >
-          Xóa
-        </Button>
-      </Space>
-    ),
+    render: (_, record) => {
+      return (
+        <Space>
+          <Button
+            type="link"
+            style={{ color: colors.primary }}
+            onClick={() => showModal(record)}
+            disabled={loading || modalLoading}
+          >
+            Sửa
+          </Button>
+          <Button
+            type="link"
+            danger
+            onClick={() => showDeleteConfirm(record.key)}
+            disabled={loading || modalLoading}
+          >
+            Xóa
+          </Button>
+        </Space>
+      );
+    },
   };
 
   // Tự động thêm width cho các cột nếu chưa có
@@ -176,25 +194,24 @@ const DataTable = ({
           icon={<PlusOutlined />}
           onClick={() => showModal()}
           style={{ background: colors.primary, border: "none" }}
-          disabled={loading}
+          disabled={loading || modalLoading}
         >
           Thêm mới
         </Button>
       </div>
 
-      <Spin spinning={loading}>
-        <Table
-          columns={[...enhancedColumns, actionColumn]}
-          dataSource={filteredData}
-          pagination={{
-            ...pagination,
-            total: filteredData.length,
-            onChange: (page, pageSize) =>
-              setPagination({ ...pagination, current: page, pageSize }),
-          }}
-          scroll={{ x: "max-content" }} // Kích hoạt cuộn ngang
-        />
-      </Spin>
+      <Table
+        columns={[...enhancedColumns, actionColumn]}
+        dataSource={filteredData}
+        loading={loading}
+        pagination={{
+          ...pagination,
+          total: filteredData.length,
+          onChange: (page, pageSize) =>
+            setPagination({ ...pagination, current: page, pageSize }),
+        }}
+        scroll={{ x: "max-content" }}
+      />
 
       <Modal
         title={editingRecord ? "Chỉnh sửa" : "Thêm mới"}
@@ -207,7 +224,7 @@ const DataTable = ({
         }}
         okText={editingRecord ? "Cập nhật" : "Thêm"}
         cancelText="Hủy"
-        confirmLoading={loading}
+        confirmLoading={modalLoading}
       >
         <Form form={form} layout="vertical">
           {formFields && formFields.length > 0 ? (
@@ -218,7 +235,9 @@ const DataTable = ({
                 label={field.label}
                 rules={field.rules || []}
               >
-                {field.type === "select" ? (
+                {field.type === "checkbox-group" ? (
+                  <Checkbox.Group options={field.options} />
+                ) : field.type === "select" ? (
                   <Select placeholder={field.placeholder}>
                     {field.options &&
                       field.options.map((option) => (
@@ -252,7 +271,7 @@ const DataTable = ({
         okText="Xóa"
         okType="danger"
         cancelText="Hủy"
-        confirmLoading={loading}
+        confirmLoading={modalLoading}
       >
         <p>Bạn có chắc chắn muốn xóa? Hành động này không thể hoàn tác.</p>
       </Modal>
