@@ -29,10 +29,12 @@ class UserManagement extends Component {
       Array.isArray(this.props.users.data) &&
       this.props.users.data.length > 0
     ) {
-      const usersData = this.props.users.data;
+      const usersData = this.props.users.data.map((user, index) => ({
+        ...user,
+        key: user._id || user.email || `user-${index}`,
+      }));
       console.log("Users data:", usersData);
 
-      // Tạo columns động từ dữ liệu users
       const dynamicColumns = this.generateColumns(usersData);
 
       this.setState({
@@ -42,40 +44,105 @@ class UserManagement extends Component {
     }
   }
 
-  // Hàm tạo columns động từ dữ liệu users, thêm cột STT
   generateColumns(users) {
     if (!users || users.length === 0) return [];
 
-    // Cột STT
     const sttColumn = {
       title: "STT",
       key: "stt",
-      width: 60, // Chiều rộng cố định cho cột STT
-      fixed: "left", // Cố định cột STT bên trái
-      render: (text, record, index) => index + 1, // Hiển thị số thứ tự (bắt đầu từ 1)
+      width: 60,
+      fixed: "left",
+      render: (text, record, index) => index + 1,
     };
 
-    // Lấy đối tượng đầu tiên để xác định các trường
-    const firstUser = users[0];
-    const dynamicColumns = Object.keys(firstUser)
-      .filter((key) => key.toLowerCase() !== "_id") // Loại trừ cột _id
-      .map((key) => ({
-        title: this.formatColumnTitle(key),
-        dataIndex: key,
-        key: key,
-        width: 150, // Chiều rộng mặc định cho các cột động
-      }));
+    const columns = [
+      {
+        title: "Họ và tên",
+        key: "fullName",
+        width: 200,
+        render: (text, record) => {
+          const firstName = record.firstName || "";
+          const lastName = record.lastName || "";
+          return `${firstName} ${lastName}`.trim() || "Chưa cập nhật";
+        },
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+        width: 200,
+      },
+      {
+        title: "Số điện thoại",
+        dataIndex: "phone",
+        key: "phone",
+        width: 150,
+        render: (text) => text || "Chưa cập nhật",
+      },
+      {
+        title: "Ngày sinh",
+        dataIndex: "dateOfBirth",
+        key: "dateOfBirth",
+        width: 150,
+        render: (text) => text || "Chưa cập nhật",
+      },
+      {
+        title: "Tên phụ huynh",
+        dataIndex: "parentName",
+        key: "parentName",
+        width: 200,
+        render: (text) => text || "Chưa cập nhật",
+      },
+      {
+        title: "Số khoá đã học",
+        dataIndex: "studiedCourse",
+        key: "studiedCourse",
+        width: 150,
+        render: (text) => text || "Chưa cập nhật",
+      },
+      {
+        title: "Avatar",
+        key: "avatar",
+        width: 100,
+        render: (text, record) => {
+          if (record.avatar) {
+            return (
+              <img
+                src={`${process.env.REACT_APP_API_BASE_URL}auth/get-image/${record.avatar}`}
+                alt="Avatar"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  objectFit: "cover",
+                  borderRadius: "50%",
+                }}
+              />
+            );
+          }
+          return "Chưa có ảnh";
+        },
+      },
+      {
+        title: "Ngày tham gia",
+        key: "createDate",
+        width: 150,
+        render: (text, record) => {
+          if (record.createDate) {
+            const date = new Date(record.createDate);
+            return date.toLocaleString("vi-VN", {
+              hour: "2-digit",
+              minute: "2-digit",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            });
+          }
+          return "Chưa cập nhật";
+        },
+      },
+    ];
 
-    // Thêm cột STT vào đầu danh sách columns
-    return [sttColumn, ...dynamicColumns];
-  }
-
-  // Hàm định dạng tiêu đề cột
-  formatColumnTitle(key) {
-    return key
-      .replace(/([A-Z])/g, " $1")
-      .replace(/^./, (str) => str.toUpperCase())
-      .trim();
+    return [sttColumn, ...columns];
   }
 
   formFields = [
@@ -109,21 +176,29 @@ class UserManagement extends Component {
 
   handleAdd = (values) => {
     return addUser(values).then((newUser) => {
+      const userWithKey = {
+        ...newUser,
+        key: newUser.id || newUser.email || Date.now(),
+      };
       this.setState((prevState) => ({
-        users: [...prevState.users, newUser],
-        columns: this.generateColumns([...prevState.users, newUser]),
+        users: [...prevState.users, userWithKey],
+        columns: this.generateColumns([...prevState.users, userWithKey]),
       }));
     });
   };
 
   handleUpdate = (key, values) => {
     return updateUser(key, values).then((updatedUser) => {
+      const userWithKey = {
+        ...updatedUser,
+        key: updatedUser.id || updatedUser.email || key,
+      };
       this.setState((prevState) => ({
         users: prevState.users.map((user) =>
-          user.key === key ? updatedUser : user
+          user.key === key ? userWithKey : user
         ),
         columns: this.generateColumns(
-          prevState.users.map((user) => (user.key === key ? updatedUser : user))
+          prevState.users.map((user) => (user.key === key ? userWithKey : user))
         ),
       }));
     });
@@ -150,6 +225,7 @@ class UserManagement extends Component {
         subtitle="Xem và quản lý danh sách người dùng trong hệ thống."
         columns={columns}
         data={users}
+        rowKey="key" // Chỉ định trường key
         onAdd={this.handleAdd}
         onUpdate={this.handleUpdate}
         onDelete={this.handleDelete}
