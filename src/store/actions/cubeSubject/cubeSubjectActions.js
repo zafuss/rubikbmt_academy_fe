@@ -29,9 +29,9 @@ const handleApiError = (dispatch, action, error) => {
 
 // Fetch Cube Subjects
 const fetchCubeSubjectsRequest = () => ({ type: FETCH_CUBE_SUBJECTS_REQUEST });
-const fetchCubeSubjectsSuccess = (subjects) => ({
+const fetchCubeSubjectsSuccess = (cubeSubjects) => ({
   type: FETCH_CUBE_SUBJECTS_SUCCESS,
-  payload: subjects,
+  payload: cubeSubjects,
 });
 const fetchCubeSubjectsFailure = (error) => ({
   type: FETCH_CUBE_SUBJECTS_FAILURE,
@@ -40,11 +40,13 @@ const fetchCubeSubjectsFailure = (error) => ({
 
 export const fetchCubeSubjectList = () => async (dispatch) => {
   dispatch(fetchCubeSubjectsRequest());
-  const apiUrl = `${BASE_URL}cubeSubject/getCubeSubjects`; // Endpoint đầy đủ: http://localhost:3001/api/v1/cubeSubject/getCubeSubjects
+  const apiUrl = BASE_URL + "cubeSubject/get-list";
   try {
-    const res = await customAxios.get(apiUrl);
-    dispatch(fetchCubeSubjectsSuccess(res.data)); // Truyền danh sách cubeSubject từ response
+    const result = await customAxios.get(apiUrl);
+    console.log("API Response:", result.data); // Kiểm tra phản hồi từ API
+    dispatch(fetchCubeSubjectsSuccess(result.data.data.cubeSubjects)); // Truy cập đúng trường `cubeSubjects`
   } catch (e) {
+    console.error("API Error:", e); // Log lỗi từ API
     handleApiError(dispatch, fetchCubeSubjectsFailure, e);
   }
 };
@@ -57,22 +59,31 @@ const addCubeSubjectFailure = (error) => ({
   payload: error,
 });
 
-export const addCubeSubject = (subject) => async (dispatch) => {
+export const addCubeSubject = (cubeSubject) => async (dispatch) => {
   dispatch(addCubeSubjectRequest());
-  const apiUrl = BASE_URL + "cube-subjects";
+  const apiUrl = BASE_URL + "cubeSubject/add";
+
+  const payload = {
+    ...cubeSubject,
+    cubeSkills: cubeSubject.cubeSkills || [], // Mặc định là mảng rỗng nếu không có
+  };
+
+  console.log("Payload being sent to API:", payload); // Log dữ liệu gửi đi
+
   try {
-    const res = await customAxios.post(apiUrl, subject);
+    const res = await customAxios.post(apiUrl, payload, { withCredentials: true });
+    console.log("API Response:", res.data); // Log phản hồi từ API
     if (res.status === 201 || res.status === 200) {
       dispatch(addCubeSubjectSuccess());
-      dispatch(fetchCubeSubjectList());
+      dispatch(fetchCubeSubjectList()); // Lấy lại danh sách sau khi thêm thành công
     } else {
       dispatch(addCubeSubjectFailure(res.data.message));
     }
   } catch (e) {
+    console.error("API Error:", e); // Log lỗi từ API
     handleApiError(dispatch, addCubeSubjectFailure, e);
   }
 };
-
 // Update Cube Subject
 const updateCubeSubjectRequest = () => ({ type: UPDATE_CUBE_SUBJECT_REQUEST });
 const updateCubeSubjectSuccess = () => ({ type: UPDATE_CUBE_SUBJECT_SUCCESS });
@@ -81,16 +92,14 @@ const updateCubeSubjectFailure = (error) => ({
   payload: error,
 });
 
-export const updateCubeSubject = (subject) => async (dispatch) => {
+export const updateCubeSubject = (cubeSubject) => async (dispatch) => {
   dispatch(updateCubeSubjectRequest());
-  const apiUrl = BASE_URL + `cube-subjects/${subject.id}`;
+  const apiUrl = `${BASE_URL}cubeSubjects/update/${cubeSubject.key}`;
   try {
-    const res = await customAxios.put(apiUrl, subject);
+    const res = await customAxios.put(apiUrl, cubeSubject, { withCredentials: true });
     if (res.status === 200) {
       dispatch(updateCubeSubjectSuccess());
       dispatch(fetchCubeSubjectList());
-    } else {
-      dispatch(updateCubeSubjectFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCubeSubjectFailure, e);
@@ -105,16 +114,14 @@ const deleteCubeSubjectFailure = (error) => ({
   payload: error,
 });
 
-export const deleteCubeSubject = (id) => async (dispatch) => {
+export const deleteCubeSubject = (cubeSubjectId) => async (dispatch) => {
   dispatch(deleteCubeSubjectRequest());
-  const apiUrl = BASE_URL + `cube-subjects/${id}`;
+  const apiUrl = `${BASE_URL}cubeSubjects/delete/${cubeSubjectId}`;
   try {
-    const res = await customAxios.delete(apiUrl);
+    const res = await customAxios.delete(apiUrl, { withCredentials: true });
     if (res.status === 200) {
       dispatch(deleteCubeSubjectSuccess());
       dispatch(fetchCubeSubjectList());
-    } else {
-      dispatch(deleteCubeSubjectFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, deleteCubeSubjectFailure, e);
@@ -133,16 +140,18 @@ const updateCubeSubjectStatusFailure = (error) => ({
   payload: error,
 });
 
-export const updateCubeSubjectStatus = (id, status) => async (dispatch) => {
+export const updateCubeSubjectStatus = (cubeSubjectId, status) => async (dispatch) => {
   dispatch(updateCubeSubjectStatusRequest());
-  const apiUrl = BASE_URL + `cube-subjects/${id}/status`;
+  const apiUrl = `${BASE_URL}cubeSubjects/update-status/${cubeSubjectId}`;
   try {
-    const res = await customAxios.patch(apiUrl, { status });
+    const res = await customAxios.patch(
+      apiUrl,
+      { status },
+      { withCredentials: true }
+    );
     if (res.status === 200) {
       dispatch(updateCubeSubjectStatusSuccess());
       dispatch(fetchCubeSubjectList());
-    } else {
-      dispatch(updateCubeSubjectStatusFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCubeSubjectStatusFailure, e);

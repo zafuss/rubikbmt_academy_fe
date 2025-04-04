@@ -23,142 +23,75 @@ class LevelManagement extends Component {
     this.props.fetchLevelList();
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.getLevelListSuccess &&
-      prevProps.levels !== this.props.levels &&
-      Array.isArray(this.props.levels.data) &&
-      this.props.levels.data.length > 0
-    ) {
-      const levelsData = this.props.levels.data.map((level, index) => ({
-        ...level,
-        key: level._id || `level-${index}`,
-      }));
+ componentDidUpdate(prevProps) {
+  console.log("Prev Props Levels:", prevProps.levels);
+  console.log("Current Props Levels:", this.props.levels);
+  console.log("getLevelListSuccess:", this.props.getLevelListSuccess);
+  console.log("Levels changed:", prevProps.levels !== this.props.levels);
+  console.log("Is Array:", Array.isArray(this.props.levels));
+  console.log("Levels length > 0:", this.props.levels.length > 0);
+  if (
+    this.props.getLevelListSuccess &&
+    prevProps.levels !== this.props.levels &&
+    Array.isArray(this.props.levels) && // Kiểm tra trực tiếp levels
+    this.props.levels.length > 0
+  ) {
+    const levelsData = this.props.levels.map((level, index) => ({
+      ...level,
+      key: level.id || `level-${index}`, // Đảm bảo mỗi cấp độ có key duy nhất
+    }));
 
-      const dynamicColumns = this.generateColumns(levelsData);
+    const dynamicColumns = this.generateColumns(levelsData);
 
-      this.setState({
-        levels: levelsData,
-        columns: dynamicColumns,
-      });
-    }
-
-    if (
-      !prevProps.updateLevelStatusSuccess &&
-      this.props.updateLevelStatusSuccess
-    ) {
-      message.success("Cập nhật trạng thái thành công!");
-      this.props.fetchLevelList();
-    }
-
-    if (
-      !prevProps.updateLevelStatusFailure &&
-      this.props.updateLevelStatusFailure
-    ) {
-      message.error(
-        this.props.updateLevelStatusFailure || "Cập nhật trạng thái thất bại!"
-      );
-    }
-
-    if (
-      this.props.updatingLevelStatus !== prevProps.updatingLevelStatus &&
-      !this.props.updatingLevelStatus
-    ) {
-      this.setState({ updatingLevelId: null });
-    }
+    this.setState({
+      levels: levelsData,
+      columns: dynamicColumns,
+    }, () => {
+      console.log("Updated State Levels:", this.state.levels);
+      console.log("Updated State Columns:", this.state.columns);
+    });
   }
+}
 
   generateColumns(levels) {
-    if (!levels || levels.length === 0) return [];
+  if (!levels || levels.length === 0) return [];
 
-    const sttColumn = {
-      title: "STT",
-      key: "stt",
-      width: 60,
-      fixed: "left",
-      render: (text, record, index) => index + 1,
-    };
+  const sttColumn = {
+    title: "STT",
+    key: "stt",
+    width: 60,
+    fixed: "left",
+    render: (text, record, index) => index + 1,
+  };
 
-    const columns = [
-      {
-        title: "Tên cấp độ",
-        dataIndex: "name",
-        key: "name",
-        width: 200,
-        render: (text) => text || "Chưa cập nhật",
+  const columns = [
+    {
+      title: "Tên cấp độ",
+      dataIndex: "name",
+      key: "name",
+      width: 200,
+      render: (text) => text || "Chưa cập nhật",
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+      width: 300,
+      render: (text) => text || "Chưa cập nhật",
+    },
+    {
+      title: "Trạng thái",
+      key: "status",
+      width: 150,
+      render: (text, record) => {
+        const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
+        return <span>{statusText}</span>;
       },
-      {
-        title: "Mô tả",
-        dataIndex: "description",
-        key: "description",
-        width: 300,
-        render: (text) => text || "Chưa cập nhật",
-      },
-      {
-        title: "Trạng thái",
-        key: "status",
-        width: 150,
-        render: (text, record) => {
-          const getStatusInfo = (status) => {
-            switch (status) {
-              case 1:
-                return {
-                  text: "Đang hoạt động",
-                  color: "#52c41a",
-                  buttonText: "Vô hiệu hóa",
-                };
-              case 0:
-                return {
-                  text: "Chưa xác nhận",
-                  color: "#faad14",
-                  buttonText: "Xác nhận",
-                };
-              case -1:
-                return {
-                  text: "Đã vô hiệu hóa",
-                  color: "#ff4d4f",
-                  buttonText: "Kích hoạt",
-                };
-              default:
-                return {
-                  text: "Chưa xác định",
-                  color: "#999999",
-                  buttonText: "Xác nhận",
-                };
-            }
-          };
+    },
+  ];
 
-          const statusInfo = getStatusInfo(record.status);
-
-          return (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-            >
-              <span
-                style={{
-                  color: statusInfo.color,
-                  fontWeight: 500,
-                }}
-              >
-                {statusInfo.text}
-              </span>
-              <Button
-                type="primary"
-                danger={record.status === 1}
-                size="small"
-                loading={this.state.updatingLevelId === record.key}
-                onClick={() => this.handleUpdateStatus(record.key, record.status)}
-              >
-                {statusInfo.buttonText}
-              </Button>
-            </div>
-          );
-        },
-      },
-    ];
-
-    return [sttColumn, ...columns];
-  }
+  return [sttColumn, ...columns];
+}
 
   formFields = [
     {
@@ -192,6 +125,9 @@ class LevelManagement extends Component {
 
   render() {
     const { levels, columns } = this.state;
+    console.log("Columns:", columns); // Kiểm tra cấu trúc cột
+    console.log("Levels:", levels);   // Kiểm tra dữ liệu
+
 
     return (
       <DataManagementPage
@@ -210,12 +146,13 @@ class LevelManagement extends Component {
 }
 
 const mapStateToProps = (state) => {
+   console.log("Redux state:", state.levelReducer);
   return {
     loading: state.levelReducer.gettingLevelList,
     gettingLevelList: state.levelReducer.gettingLevelList,
     getLevelListSuccess: state.levelReducer.getLevelListSuccess,
     getLevelListFailure: state.levelReducer.getLevelListFailureMsg,
-    levels: state.levelReducer.levelList,
+    levels: state.levelReducer.levelList, // Sử dụng trực tiếp levelList
     updateLevelStatusSuccess: state.levelReducer.updateLevelStatusSuccess,
     updateLevelStatusFailure: state.levelReducer.updateLevelStatusFailureMsg,
     updatingLevelStatus: state.levelReducer.updatingLevelStatus,

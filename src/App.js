@@ -19,10 +19,12 @@ import { useLocation } from "react-router-dom";
 import CuberForm from "./admin/pages/CuberForm";
 import store from "./store/config/store";
 import { Provider } from "react-redux";
-import SubjectManagement from "./admin/pages/SubjectManagement";
+import CubeSubjectManagement from "./admin/pages/CubeSubjectManagement";
 import CourseManagement from "./admin/pages/CourseManagement";
 import DifficultyManagement from "./admin/pages/DifficultyManagement";
 import ProtectedRoute from "./admin/components/ProtectedRoute";
+import LevelManagement from "./admin/pages/LevelManagement";
+import CubeSkillManagement from "./admin/pages/CubeSkillManagement";
 const root = document.documentElement;
 
 Object.keys(colors).forEach((key) => {
@@ -67,9 +69,11 @@ function App() {
               <Route path="users" element={<UserManagement />} />
               <Route path="mentors" element={<MentorManagement />} />
               <Route path="students" element={<StudentManagement />} />
-              <Route path="subjects" element={<SubjectManagement />} />
+              <Route path="cubeSubjects" element={<CubeSubjectManagement />} />
               <Route path="courses" element={<CourseManagement />} />
               <Route path="difficulties" element={<DifficultyManagement />} />
+              <Route path="levels" element={<LevelManagement />} />
+              <Route path="cubeSkills" element={<CubeSkillManagement />} />
               <Route path="profile" element={<Profile />} />
               <Route path="classes/list" element={<ClassList />} />
               <Route path="classes/add/mass" element={<AddMassClass />} />

@@ -34,20 +34,24 @@ const initState = {
   updateCubeSubjectStatusFailureMsg: "",
 };
 
-function cubeSubjectReducer(state = initState, action) {
+const cubeSubjectReducer = (state = initState, action) => {
   switch (action.type) {
     case FETCH_CUBE_SUBJECTS_REQUEST:
       return {
         ...state,
         loading: true,
-      };
-    case FETCH_CUBE_SUBJECTS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        cubeSubjectList: action.payload,
+        cubeSubjectList: [],
         error: "",
       };
+   case FETCH_CUBE_SUBJECTS_SUCCESS:
+  console.log("Reducer Payload:", action.payload); // Kiểm tra payload
+  return {
+    ...state,
+    loading: false,
+    getCubeSubjectListSuccess: true, // Đảm bảo giá trị này được cập nhật
+    cubeSubjectList: action.payload, // Cập nhật danh sách chủ đề
+    error: "",
+  };
     case FETCH_CUBE_SUBJECTS_FAILURE:
       return {
         ...state,
@@ -71,6 +75,7 @@ function cubeSubjectReducer(state = initState, action) {
       return {
         ...state,
         addingCubeSubject: false,
+        addCubeSubjectSuccess: false,
         addCubeSubjectFailureMsg: action.payload,
       };
     case UPDATE_CUBE_SUBJECT_REQUEST:
@@ -90,6 +95,7 @@ function cubeSubjectReducer(state = initState, action) {
       return {
         ...state,
         updatingCubeSubject: false,
+        updateCubeSubjectSuccess: false,
         updateCubeSubjectFailureMsg: action.payload,
       };
     case DELETE_CUBE_SUBJECT_REQUEST:
@@ -109,6 +115,7 @@ function cubeSubjectReducer(state = initState, action) {
       return {
         ...state,
         deletingCubeSubject: false,
+        deleteCubeSubjectSuccess: false,
         deleteCubeSubjectFailureMsg: action.payload,
       };
     case UPDATE_CUBE_SUBJECT_STATUS_REQUEST:
@@ -128,11 +135,12 @@ function cubeSubjectReducer(state = initState, action) {
       return {
         ...state,
         updatingCubeSubjectStatus: false,
+        updateCubeSubjectStatusSuccess: false,
         updateCubeSubjectStatusFailureMsg: action.payload,
       };
     default:
       return state;
   }
-}
+};
 
 export default cubeSubjectReducer;

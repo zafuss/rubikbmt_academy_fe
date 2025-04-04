@@ -24,47 +24,36 @@ class CubeSkillManagement extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    console.log("Prev Props CubeSkills:", prevProps.cubeSkills);
+    console.log("Current Props CubeSkills:", this.props.cubeSkills);
+    console.log("getCubeSkillListSuccess:", this.props.getCubeSkillListSuccess);
+    console.log("CubeSkills changed:", prevProps.cubeSkills !== this.props.cubeSkills);
+    console.log("Is Array:", Array.isArray(this.props.cubeSkills));
+    console.log("CubeSkills length > 0:", this.props.cubeSkills.length > 0);
+
     if (
       this.props.getCubeSkillListSuccess &&
       prevProps.cubeSkills !== this.props.cubeSkills &&
-      Array.isArray(this.props.cubeSkills.data) &&
-      this.props.cubeSkills.data.length > 0
+      Array.isArray(this.props.cubeSkills) &&
+      this.props.cubeSkills.length > 0
     ) {
-      const cubeSkillsData = this.props.cubeSkills.data.map((skill, index) => ({
+      const cubeSkillsData = this.props.cubeSkills.map((skill, index) => ({
         ...skill,
-        key: skill._id || `skill-${index}`,
+        key: skill.id || `skill-${index}`, // Đảm bảo mỗi kỹ năng có key duy nhất
       }));
 
       const dynamicColumns = this.generateColumns(cubeSkillsData);
 
-      this.setState({
-        cubeSkills: cubeSkillsData,
-        columns: dynamicColumns,
-      });
-    }
-
-    if (
-      !prevProps.updateCubeSkillStatusSuccess &&
-      this.props.updateCubeSkillStatusSuccess
-    ) {
-      message.success("Cập nhật trạng thái thành công!");
-      this.props.fetchCubeSkillList();
-    }
-
-    if (
-      !prevProps.updateCubeSkillStatusFailure &&
-      this.props.updateCubeSkillStatusFailure
-    ) {
-      message.error(
-        this.props.updateCubeSkillStatusFailure || "Cập nhật trạng thái thất bại!"
+      this.setState(
+        {
+          cubeSkills: cubeSkillsData,
+          columns: dynamicColumns,
+        },
+        () => {
+          console.log("Updated State CubeSkills:", this.state.cubeSkills);
+          console.log("Updated State Columns:", this.state.columns);
+        }
       );
-    }
-
-    if (
-      this.props.updatingCubeSkillStatus !== prevProps.updatingCubeSkillStatus &&
-      !this.props.updatingCubeSkillStatus
-    ) {
-      this.setState({ updatingSkillId: null });
     }
   }
 
@@ -99,62 +88,8 @@ class CubeSkillManagement extends Component {
         key: "status",
         width: 150,
         render: (text, record) => {
-          const getStatusInfo = (status) => {
-            switch (status) {
-              case 1:
-                return {
-                  text: "Đang hoạt động",
-                  color: "#52c41a",
-                  buttonText: "Vô hiệu hóa",
-                };
-              case 0:
-                return {
-                  text: "Chưa xác nhận",
-                  color: "#faad14",
-                  buttonText: "Xác nhận",
-                };
-              case -1:
-                return {
-                  text: "Đã vô hiệu hóa",
-                  color: "#ff4d4f",
-                  buttonText: "Kích hoạt",
-                };
-              default:
-                return {
-                  text: "Chưa xác định",
-                  color: "#999999",
-                  buttonText: "Xác nhận",
-                };
-            }
-          };
-
-          const statusInfo = getStatusInfo(record.status);
-
-          return (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-            >
-              <span
-                style={{
-                  color: statusInfo.color,
-                  fontWeight: 500,
-                }}
-              >
-                {statusInfo.text}
-              </span>
-              <Button
-                type="primary"
-                danger={record.status === 1}
-                size="small"
-                loading={this.state.updatingSkillId === record.key}
-                onClick={() =>
-                  this.handleUpdateStatus(record.key, record.status)
-                }
-              >
-                {statusInfo.buttonText}
-              </Button>
-            </div>
-          );
+          const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
+          return <span>{statusText}</span>;
         },
       },
     ];
@@ -193,6 +128,8 @@ class CubeSkillManagement extends Component {
 
   render() {
     const { cubeSkills, columns } = this.state;
+    console.log("Columns:", columns); // Kiểm tra cấu trúc cột
+    console.log("CubeSkills:", cubeSkills); // Kiểm tra dữ liệu
 
     return (
       <DataManagementPage
@@ -211,16 +148,14 @@ class CubeSkillManagement extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("Redux state:", state.cubeSkillReducer);
   return {
-    loading: state.cubeSkillReducer.gettingCubeSkillList,
+    cubeSkills: state.cubeSkillReducer.cubeSkillList,
     gettingCubeSkillList: state.cubeSkillReducer.gettingCubeSkillList,
     getCubeSkillListSuccess: state.cubeSkillReducer.getCubeSkillListSuccess,
     getCubeSkillListFailure: state.cubeSkillReducer.getCubeSkillListFailureMsg,
-    cubeSkills: state.cubeSkillReducer.cubeSkillList,
-    updateCubeSkillStatusSuccess:
-      state.cubeSkillReducer.updateCubeSkillStatusSuccess,
-    updateCubeSkillStatusFailure:
-      state.cubeSkillReducer.updateCubeSkillStatusFailureMsg,
+    updateCubeSkillStatusSuccess: state.cubeSkillReducer.updateCubeSkillStatusSuccess,
+    updateCubeSkillStatusFailure: state.cubeSkillReducer.updateCubeSkillStatusFailureMsg,
     updatingCubeSkillStatus: state.cubeSkillReducer.updatingCubeSkillStatus,
   };
 };

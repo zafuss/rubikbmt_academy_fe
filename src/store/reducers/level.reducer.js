@@ -34,18 +34,21 @@ const initState = {
   updateLevelStatusFailureMsg: "",
 };
 
-function levelReducer(state = initState, action) {
+const levelReducer =(state = initState, action) =>{
   switch (action.type) {
     case FETCH_LEVELS_REQUEST:
       return {
         ...state,
-        loading: true,
+        gettingLevelList: true,
+        getLevelListSuccess: false,
       };
     case FETCH_LEVELS_SUCCESS:
+      console.log("Reducer Payload:", action.payload); // Kiểm tra payload
       return {
         ...state,
-        loading: false,
-        levelList: action.payload,
+        gettingLevelList: false,
+        getLevelListSuccess: true,
+        levelList: action.payload, // Đảm bảo cập nhật `levelList`
         error: "",
       };
     case FETCH_LEVELS_FAILURE:
@@ -71,6 +74,7 @@ function levelReducer(state = initState, action) {
       return {
         ...state,
         addingLevel: false,
+        addLevelSuccess: false,
         addLevelFailureMsg: action.payload,
       };
     case UPDATE_LEVEL_REQUEST:
@@ -90,6 +94,7 @@ function levelReducer(state = initState, action) {
       return {
         ...state,
         updatingLevel: false,
+        updateLevelSuccess: false,
         updateLevelFailureMsg: action.payload,
       };
     case DELETE_LEVEL_REQUEST:
@@ -109,6 +114,7 @@ function levelReducer(state = initState, action) {
       return {
         ...state,
         deletingLevel: false,
+        deleteLevelSuccess: false,
         deleteLevelFailureMsg: action.payload,
       };
     case UPDATE_LEVEL_STATUS_REQUEST:
@@ -128,6 +134,7 @@ function levelReducer(state = initState, action) {
       return {
         ...state,
         updatingLevelStatus: false,
+        updateLevelStatusSuccess: false,
         updateLevelStatusFailureMsg: action.payload,
       };
     default:

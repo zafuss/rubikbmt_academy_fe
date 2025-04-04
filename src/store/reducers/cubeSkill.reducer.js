@@ -34,26 +34,30 @@ const initState = {
   updateCubeSkillStatusFailureMsg: "",
 };
 
-function cubeSkillReducer(state = initState, action) {
+const cubeSkillReducer = (state = initState, action) => {
   switch (action.type) {
     case FETCH_CUBE_SKILLS_REQUEST:
-      return {
-        ...state,
-        loading: true,
-      };
-    case FETCH_CUBE_SKILLS_SUCCESS:
-      return {
-        ...state,
-        loading: false,
-        cubeSkillList: action.payload,
-        error: "",
-      };
-    case FETCH_CUBE_SKILLS_FAILURE:
-      return {
-        ...state,
-        loading: false,
-        error: action.payload,
-      };
+  return {
+    ...state,
+    loading: true,
+    getCubeSkillListSuccess: false, // Đặt lại thành false khi bắt đầu request
+  };
+case FETCH_CUBE_SKILLS_SUCCESS:
+  console.log("Reducer Payload:", action.payload); // Kiểm tra payload
+  return {
+    ...state,
+    loading: false,
+    getCubeSkillListSuccess: true, // Đảm bảo giá trị này được cập nhật
+    cubeSkillList: action.payload,
+    error: "",
+  };
+case FETCH_CUBE_SKILLS_FAILURE:
+  return {
+    ...state,
+    loading: false,
+    getCubeSkillListSuccess: false, // Đặt lại thành false khi thất bại
+    error: action.payload,
+  };
     case ADD_CUBE_SKILL_REQUEST:
       return {
         ...state,
@@ -71,6 +75,7 @@ function cubeSkillReducer(state = initState, action) {
       return {
         ...state,
         addingCubeSkill: false,
+        addCubeSkillSuccess: false,
         addCubeSkillFailureMsg: action.payload,
       };
     case UPDATE_CUBE_SKILL_REQUEST:
@@ -90,6 +95,7 @@ function cubeSkillReducer(state = initState, action) {
       return {
         ...state,
         updatingCubeSkill: false,
+        updateCubeSkillSuccess: false,
         updateCubeSkillFailureMsg: action.payload,
       };
     case DELETE_CUBE_SKILL_REQUEST:
@@ -109,6 +115,7 @@ function cubeSkillReducer(state = initState, action) {
       return {
         ...state,
         deletingCubeSkill: false,
+        deleteCubeSkillSuccess: false,
         deleteCubeSkillFailureMsg: action.payload,
       };
     case UPDATE_CUBE_SKILL_STATUS_REQUEST:
@@ -128,11 +135,12 @@ function cubeSkillReducer(state = initState, action) {
       return {
         ...state,
         updatingCubeSkillStatus: false,
+        updateCubeSkillStatusSuccess: false,
         updateCubeSkillStatusFailureMsg: action.payload,
       };
     default:
       return state;
   }
-}
+};
 
 export default cubeSkillReducer;

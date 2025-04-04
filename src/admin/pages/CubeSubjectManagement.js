@@ -7,7 +7,6 @@ import {
   updateCubeSubject,
   updateCubeSubjectStatus,
 } from "src/store/actions/cubeSubject/cubeSubjectActions.js";
-import { Space, Button, message, Spin } from "antd";
 
 class CubeSubjectManagement extends Component {
   constructor(props) {
@@ -20,163 +19,97 @@ class CubeSubjectManagement extends Component {
   }
 
   componentDidMount() {
+    console.log("Fetching Cube Subjects...");
+    console.log("Props in DataManagementPage:", this.props);
     this.props.fetchCubeSubjectList();
   }
 
   componentDidUpdate(prevProps) {
-    if (
-      this.props.getCubeSubjectListSuccess &&
-      prevProps.cubeSubjects !== this.props.cubeSubjects &&
-      Array.isArray(this.props.cubeSubjects.data) &&
-      this.props.cubeSubjects.data.length > 0
-    ) {
-      const cubeSubjectsData = this.props.cubeSubjects.data.map(
-        (subject, index) => ({
-          ...subject,
-          key: subject._id || `subject-${index}`,
-        })
-      );
+  console.log("getCubeSubjectListSuccess:", this.props.getCubeSubjectListSuccess);
+  console.log("Prev Props CubeSubjects:", prevProps.cubeSubjects);
+  console.log("Current Props CubeSubjects:", this.props.cubeSubjects);
 
-      const dynamicColumns = this.generateColumns(cubeSubjectsData);
 
-      this.setState({
+  if (
+    this.props.getCubeSubjectListSuccess &&
+    prevProps.cubeSubjects !== this.props.cubeSubjects &&
+    Array.isArray(this.props.cubeSubjects) &&
+    this.props.cubeSubjects.length > 0
+  ) {
+    const cubeSubjectsData = this.props.cubeSubjects.map((subject, index) => ({
+      ...subject,
+      key: subject._id || `subject-${index}`, // Đảm bảo mỗi chủ đề có key duy nhất
+    }));
+
+    console.log("Processed CubeSubjects Data:", cubeSubjectsData);
+
+    const dynamicColumns = this.generateColumns(cubeSubjectsData);
+
+    this.setState(
+      {
         cubeSubjects: cubeSubjectsData,
         columns: dynamicColumns,
-      });
-    }
-
-    if (
-      !prevProps.updateCubeSubjectStatusSuccess &&
-      this.props.updateCubeSubjectStatusSuccess
-    ) {
-      message.success("Cập nhật trạng thái thành công!");
-      this.props.fetchCubeSubjectList();
-    }
-
-    if (
-      !prevProps.updateCubeSubjectStatusFailure &&
-      this.props.updateCubeSubjectStatusFailure
-    ) {
-      message.error(
-        this.props.updateCubeSubjectStatusFailure ||
-          "Cập nhật trạng thái thất bại!"
-      );
-    }
-
-    if (
-      this.props.updatingCubeSubjectStatus !==
-        prevProps.updatingCubeSubjectStatus &&
-      !this.props.updatingCubeSubjectStatus
-    ) {
-      this.setState({ updatingSubjectId: null });
-    }
+      },
+      () => {
+        console.log("Updated State CubeSubjects:", this.state.cubeSubjects);
+        console.log("Updated State Columns:", this.state.columns);
+      }
+    );
   }
+}
 
   generateColumns(cubeSubjects) {
-    if (!cubeSubjects || cubeSubjects.length === 0) return [];
+  if (!cubeSubjects || cubeSubjects.length === 0) return [];
 
-    const sttColumn = {
-      title: "STT",
-      key: "stt",
-      width: 60,
-      fixed: "left",
-      render: (text, record, index) => index + 1,
-    };
+  const sttColumn = {
+    title: "STT",
+    key: "stt",
+    width: 60,
+    fixed: "left",
+    render: (text, record, index) => index + 1,
+  };
 
-    const columns = [
-      {
-        title: "Tên bộ môn",
-        dataIndex: "name",
-        key: "name",
-        width: 200,
-        render: (text) => text || "Chưa cập nhật",
+  const columns = [
+    {
+      title: "Tên chủ đề",
+      dataIndex: "name",
+      key: "name",
+      width: 200,
+      render: (text) => text || "Chưa cập nhật", // Hiển thị "Chưa cập nhật" nếu text là null hoặc undefined
+    },
+    {
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
+      width: 300,
+      render: (text) => text || "Chưa cập nhật",
+    },
+    {
+      title: "Trạng thái",
+      key: "status",
+      width: 150,
+      render: (text, record) => {
+        const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
+        return <span>{statusText}</span>;
       },
-      {
-        title: "Mô tả",
-        dataIndex: "description",
-        key: "description",
-        width: 300,
-        render: (text) => text || "Chưa cập nhật",
-      },
-      {
-        title: "Trạng thái",
-        key: "status",
-        width: 150,
-        render: (text, record) => {
-          const getStatusInfo = (status) => {
-            switch (status) {
-              case 1:
-                return {
-                  text: "Đang hoạt động",
-                  color: "#52c41a",
-                  buttonText: "Vô hiệu hóa",
-                };
-              case 0:
-                return {
-                  text: "Chưa xác nhận",
-                  color: "#faad14",
-                  buttonText: "Xác nhận",
-                };
-              case -1:
-                return {
-                  text: "Đã vô hiệu hóa",
-                  color: "#ff4d4f",
-                  buttonText: "Kích hoạt",
-                };
-              default:
-                return {
-                  text: "Chưa xác định",
-                  color: "#999999",
-                  buttonText: "Xác nhận",
-                };
-            }
-          };
+    },
+  ];
 
-          const statusInfo = getStatusInfo(record.status);
-
-          return (
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "8px" }}
-            >
-              <span
-                style={{
-                  color: statusInfo.color,
-                  fontWeight: 500,
-                }}
-              >
-                {statusInfo.text}
-              </span>
-              <Button
-                type="primary"
-                danger={record.status === 1}
-                size="small"
-                loading={this.state.updatingSubjectId === record.key}
-                onClick={() =>
-                  this.handleUpdateStatus(record.key, record.status)
-                }
-              >
-                {statusInfo.buttonText}
-              </Button>
-            </div>
-          );
-        },
-      },
-    ];
-
-    return [sttColumn, ...columns];
-  }
+  console.log("Generated Columns:", [sttColumn, ...columns]);
+  return [sttColumn, ...columns];
+}
 
   formFields = [
     {
       name: "name",
-      label: "Tên bộ môn",
-      placeholder: "Nhập tên bộ môn",
-      rules: [{ required: true, message: "Vui lòng nhập tên bộ môn!" }],
+      label: "Tên chủ đề",
+      placeholder: "Nhập tên chủ đề",
+      rules: [{ required: true, message: "Vui lòng nhập tên chủ đề!" }],
     },
     {
       name: "description",
       label: "Mô tả",
-      placeholder: "Nhập mô tả bộ môn",
+      placeholder: "Nhập mô tả chủ đề",
       rules: [{ required: true, message: "Vui lòng nhập mô tả!" }],
     },
   ];
@@ -188,6 +121,7 @@ class CubeSubjectManagement extends Component {
   handleUpdate = (values) => {
     this.props.updateCubeSubject(values);
   };
+
   handleUpdateStatus = (key, currentStatus) => {
     const newStatus = currentStatus === 1 ? -1 : 1;
     this.setState({ updatingSubjectId: key });
@@ -196,11 +130,13 @@ class CubeSubjectManagement extends Component {
 
   render() {
     const { cubeSubjects, columns } = this.state;
+    console.log("Columns:", columns); // Kiểm tra cấu trúc cột
+    console.log("CubeSubjects:", cubeSubjects); // Kiểm tra dữ liệu
 
     return (
       <DataManagementPage
-        title="Quản lý bộ môn Rubik"
-        subtitle="Xem và quản lý danh sách bộ môn Rubik trong hệ thống."
+        title="Quản lý chủ đề Rubik"
+        subtitle="Xem và quản lý danh sách chủ đề Rubik trong hệ thống."
         columns={columns}
         data={cubeSubjects}
         rowKey="key"
@@ -214,20 +150,15 @@ class CubeSubjectManagement extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log("Redux state in CubeSubjectManagement:", state); // Kiểm tra toàn bộ Redux state
   return {
-    loading: state.cubeSubjectReducer.gettingCubeSubjectList,
-    gettingCubeSubjectList: state.cubeSubjectReducer.gettingCubeSubjectList,
-    getCubeSubjectListSuccess:
-      state.cubeSubjectReducer.getCubeSubjectListSuccess,
-    getCubeSubjectListFailure:
-      state.cubeSubjectReducer.getCubeSubjectListFailureMsg,
-    cubeSubjects: state.cubeSubjectReducer.cubeSubjectList,
-    updateCubeSubjectStatusSuccess:
-      state.cubeSubjectReducer.updateCubeSubjectStatusSuccess,
-    updateCubeSubjectStatusFailure:
-      state.cubeSubjectReducer.updateCubeSubjectStatusFailureMsg,
-    updatingCubeSubjectStatus:
-      state.cubeSubjectReducer.updatingCubeSubjectStatus,
+    cubeSubjects: state.cubeSubjectReducer?.cubeSubjectList || [], // Đảm bảo không bị undefined
+    gettingCubeSubjectList: state.cubeSubjectReducer?.gettingCubeSubjectList || false,
+    getCubeSubjectListSuccess: state.cubeSubjectReducer?.getCubeSubjectListSuccess || false,
+    getCubeSubjectListFailure: state.cubeSubjectReducer?.getCubeSubjectListFailureMsg || "",
+    updateCubeSubjectStatusSuccess: state.cubeSubjectReducer?.updateCubeSubjectStatusSuccess || false,
+    updateCubeSubjectStatusFailure: state.cubeSubjectReducer?.updateCubeSubjectStatusFailureMsg || "",
+    updatingCubeSubjectStatus: state.cubeSubjectReducer?.updatingCubeSubjectStatus || false,
   };
 };
 

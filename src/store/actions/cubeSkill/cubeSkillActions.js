@@ -1,4 +1,3 @@
-import axios from "axios";
 import customAxios from "../../../utils/customAxios";
 import {
   FETCH_CUBE_SKILLS_REQUEST,
@@ -30,9 +29,9 @@ const handleApiError = (dispatch, action, error) => {
 
 // Fetch Cube Skills
 const fetchCubeSkillsRequest = () => ({ type: FETCH_CUBE_SKILLS_REQUEST });
-const fetchCubeSkillsSuccess = (skills) => ({
+const fetchCubeSkillsSuccess = (cubeSkills) => ({
   type: FETCH_CUBE_SKILLS_SUCCESS,
-  payload: skills,
+  payload: cubeSkills,
 });
 const fetchCubeSkillsFailure = (error) => ({
   type: FETCH_CUBE_SKILLS_FAILURE,
@@ -41,10 +40,11 @@ const fetchCubeSkillsFailure = (error) => ({
 
 export const fetchCubeSkillList = () => async (dispatch) => {
   dispatch(fetchCubeSkillsRequest());
-  const apiUrl = `${BASE_URL}cubeSkill/getCubeSkills`; // Endpoint đầy đủ: http://localhost:3001/api/v1/cubeSkill/getCubeSkills
+  const apiUrl = BASE_URL + "cubeSkill/get-list";
   try {
-    const res = await customAxios.get(apiUrl);
-    dispatch(fetchCubeSkillsSuccess(res.data.cubeSkills)); // Truyền danh sách cubeSkills từ response
+    const result = await customAxios.get(apiUrl, { withCredentials: true });
+    console.log("API Response:", result.data.data.cubeSkills); // Kiểm tra dữ liệu trả về
+    dispatch(fetchCubeSkillsSuccess(result.data.data.cubeSkills)); // Truy cập đúng trường `cubeSkills`
   } catch (e) {
     handleApiError(dispatch, fetchCubeSkillsFailure, e);
   }
@@ -58,11 +58,11 @@ const addCubeSkillFailure = (error) => ({
   payload: error,
 });
 
-export const addCubeSkill = (skill) => async (dispatch) => {
+export const addCubeSkill = (cubeSkill) => async (dispatch) => {
   dispatch(addCubeSkillRequest());
-  const apiUrl = BASE_URL + "cube-skills";
+  const apiUrl = BASE_URL + "cubeSkills/add";
   try {
-    const res = await customAxios.post(apiUrl, skill);
+    const res = await customAxios.post(apiUrl, cubeSkill, { withCredentials: true });
     if (res.status === 201 || res.status === 200) {
       dispatch(addCubeSkillSuccess());
       dispatch(fetchCubeSkillList());
@@ -82,16 +82,14 @@ const updateCubeSkillFailure = (error) => ({
   payload: error,
 });
 
-export const updateCubeSkill = (skill) => async (dispatch) => {
+export const updateCubeSkill = (cubeSkill) => async (dispatch) => {
   dispatch(updateCubeSkillRequest());
-  const apiUrl = BASE_URL + `cube-skills/${skill.id}`;
+  const apiUrl = `${BASE_URL}cubeSkills/update/${cubeSkill.key}`;
   try {
-    const res = await customAxios.put(apiUrl, skill);
+    const res = await customAxios.put(apiUrl, cubeSkill, { withCredentials: true });
     if (res.status === 200) {
       dispatch(updateCubeSkillSuccess());
       dispatch(fetchCubeSkillList());
-    } else {
-      dispatch(updateCubeSkillFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCubeSkillFailure, e);
@@ -106,16 +104,14 @@ const deleteCubeSkillFailure = (error) => ({
   payload: error,
 });
 
-export const deleteCubeSkill = (id) => async (dispatch) => {
+export const deleteCubeSkill = (cubeSkillId) => async (dispatch) => {
   dispatch(deleteCubeSkillRequest());
-  const apiUrl = BASE_URL + `cube-skills/${id}`;
+  const apiUrl = `${BASE_URL}cubeSkills/delete/${cubeSkillId}`;
   try {
-    const res = await customAxios.delete(apiUrl);
+    const res = await customAxios.delete(apiUrl, { withCredentials: true });
     if (res.status === 200) {
       dispatch(deleteCubeSkillSuccess());
       dispatch(fetchCubeSkillList());
-    } else {
-      dispatch(deleteCubeSkillFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, deleteCubeSkillFailure, e);
@@ -134,16 +130,18 @@ const updateCubeSkillStatusFailure = (error) => ({
   payload: error,
 });
 
-export const updateCubeSkillStatus = (id, status) => async (dispatch) => {
+export const updateCubeSkillStatus = (cubeSkillId, status) => async (dispatch) => {
   dispatch(updateCubeSkillStatusRequest());
-  const apiUrl = BASE_URL + `cube-skills/${id}/status`;
+  const apiUrl = `${BASE_URL}cubeSkills/update-status/${cubeSkillId}`;
   try {
-    const res = await customAxios.patch(apiUrl, { status });
+    const res = await customAxios.patch(
+      apiUrl,
+      { status },
+      { withCredentials: true }
+    );
     if (res.status === 200) {
       dispatch(updateCubeSkillStatusSuccess());
       dispatch(fetchCubeSkillList());
-    } else {
-      dispatch(updateCubeSkillStatusFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCubeSkillStatusFailure, e);

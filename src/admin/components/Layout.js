@@ -179,18 +179,18 @@ class MainLayout extends Component {
                     },
                     {
                       key: "9",
-                      label: <Link to="/admin/subjects">Quản lý bộ môn</Link>,
+                      label: <Link to="/admin/cubeSubjects">Quản lý bộ môn</Link>,
                     },
                     {
                       key: "10",
                       label: (
-                        <Link to="/admin/classes/list">Quản lý độ khó</Link>
+                        <Link to="/admin/levels">Quản lý độ khó</Link>
                       ),
                     },
                     {
                       key: "11",
                       label: (
-                        <Link to="/admin/classes/list">
+                        <Link to="/admin/cubeSkills">
                           Quản lý đánh giá trình độ
                         </Link>
                       ),
