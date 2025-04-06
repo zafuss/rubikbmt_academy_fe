@@ -7,7 +7,7 @@ import {
   updateCubeSubject,
   updateCubeSubjectStatus,
 } from "src/store/actions/cubeSubject/cubeSubjectActions.js";
-
+import { fetchCubeSkillList } from "src/store/actions/cubeSkill/cubeSkillActions.js"; // Import action này
 class CubeSubjectManagement extends Component {
   constructor(props) {
     super(props);
@@ -19,45 +19,50 @@ class CubeSubjectManagement extends Component {
   }
 
   componentDidMount() {
-    console.log("Fetching Cube Subjects...");
-    console.log("Props in DataManagementPage:", this.props);
-    this.props.fetchCubeSubjectList();
-  }
+  console.log("Fetching Cube Subjects...");
+  this.props.fetchCubeSubjectList();
+  this.props.fetchCubeSkillList(); // Gọi action để lấy danh sách Cube Skill
+}
 
-  componentDidUpdate(prevProps) {
-  console.log("getCubeSubjectListSuccess:", this.props.getCubeSubjectListSuccess);
-  console.log("Prev Props CubeSubjects:", prevProps.cubeSubjects);
-  console.log("Current Props CubeSubjects:", this.props.cubeSubjects);
-
-
+ componentDidUpdate(prevProps) {
   if (
     this.props.getCubeSubjectListSuccess &&
     prevProps.cubeSubjects !== this.props.cubeSubjects &&
     Array.isArray(this.props.cubeSubjects) &&
     this.props.cubeSubjects.length > 0
   ) {
-    const cubeSubjectsData = this.props.cubeSubjects.map((subject, index) => ({
-      ...subject,
-      key: subject._id || `subject-${index}`, // Đảm bảo mỗi chủ đề có key duy nhất
-    }));
+    this.setState({ cubeSkills: this.props.cubeSkills });
+    const cubeSubjectsData = this.props.cubeSubjects.map((subject, index) => {
+      // Chuyển đổi subject.cubeSkills thành mảng các ID kỹ năng
+      const subjectCubeSkills = Array.isArray(subject.cubeSkills)
+        ? subject.cubeSkills.map((skill) =>
+            typeof skill === "object" && skill._id ? skill._id.toString() : skill.toString()
+          )
+        : [];
 
-    console.log("Processed CubeSubjects Data:", cubeSubjectsData);
+      // Lọc các kỹ năng liên quan
+      const relatedSkills = this.props.cubeSkills.filter((skill) =>
+        subjectCubeSkills.includes(skill._id.toString())
+      );
+
+      console.log("Subject CubeSkills:", subjectCubeSkills);
+      console.log("Related Skills for Subject:", subject.name, relatedSkills);
+
+      return {
+        ...subject,
+        skills: relatedSkills.map((skill) => skill.name).join(", "), // Ghép tên kỹ năng thành chuỗi
+        key: subject._id || `subject-${index}`,
+      };
+    });
 
     const dynamicColumns = this.generateColumns(cubeSubjectsData);
 
-    this.setState(
-      {
-        cubeSubjects: cubeSubjectsData,
-        columns: dynamicColumns,
-      },
-      () => {
-        console.log("Updated State CubeSubjects:", this.state.cubeSubjects);
-        console.log("Updated State Columns:", this.state.columns);
-      }
-    );
+    this.setState({
+      cubeSubjects: cubeSubjectsData,
+      columns: dynamicColumns,
+    });
   }
 }
-
   generateColumns(cubeSubjects) {
   if (!cubeSubjects || cubeSubjects.length === 0) return [];
 
@@ -77,22 +82,13 @@ class CubeSubjectManagement extends Component {
       width: 200,
       render: (text) => text || "Chưa cập nhật", // Hiển thị "Chưa cập nhật" nếu text là null hoặc undefined
     },
-    {
-      title: "Mô tả",
-      dataIndex: "description",
-      key: "description",
-      width: 300,
-      render: (text) => text || "Chưa cập nhật",
-    },
-    {
-      title: "Trạng thái",
-      key: "status",
-      width: 150,
-      render: (text, record) => {
-        const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
-        return <span>{statusText}</span>;
-      },
-    },
+     {
+  title: "Cube Skill",
+  dataIndex: "skills", // Sử dụng 'skills' đã được xử lý
+  key: "skills",
+  width: 300,
+  render: (text) => text || "Không có kỹ năng liên quan", // Hiển thị chuỗi kỹ năng hoặc thông báo mặc định
+}
   ];
 
   console.log("Generated Columns:", [sttColumn, ...columns]);
@@ -107,20 +103,35 @@ class CubeSubjectManagement extends Component {
       rules: [{ required: true, message: "Vui lòng nhập tên chủ đề!" }],
     },
     {
-      name: "description",
-      label: "Mô tả",
-      placeholder: "Nhập mô tả chủ đề",
-      rules: [{ required: true, message: "Vui lòng nhập mô tả!" }],
-    },
+    name: "skills",
+    label: "Kỹ năng",
+    placeholder: "Chọn kỹ năng",
+    type: "select",
+    mode: "multiple",
+    options: (this.props.cubeSkills || []).map((skill) => ({
+      label: skill.name,
+      value: skill._id,
+    })),
+    rules: [{ required: true, message: "Vui lòng chọn ít nhất một kỹ năng!" }],
+  },
+    
   ];
 
   handleAdd = (values) => {
-    this.props.addCubeSubject(values);
+  const payload = {
+    ...values,
+    skills: values.skills, // Đảm bảo gửi danh sách ID kỹ năng
   };
+  this.props.addCubeSubject(payload);
+};
 
-  handleUpdate = (values) => {
-    this.props.updateCubeSubject(values);
+ handleUpdate = (values) => {
+  const payload = {
+    ...values,
+    skills: values.skills, // Đảm bảo gửi danh sách ID kỹ năng
   };
+  this.props.updateCubeSubject(payload);
+};
 
   handleUpdateStatus = (key, currentStatus) => {
     const newStatus = currentStatus === 1 ? -1 : 1;
@@ -150,21 +161,18 @@ class CubeSubjectManagement extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log("Redux state in CubeSubjectManagement:", state); // Kiểm tra toàn bộ Redux state
   return {
-    cubeSubjects: state.cubeSubjectReducer?.cubeSubjectList || [], // Đảm bảo không bị undefined
+    cubeSkills: state.cubeSkillReducer?.cubeSkillList || [], // Lấy danh sách Cube Skill
+    cubeSubjects: state.cubeSubjectReducer?.cubeSubjectList || [],
     gettingCubeSubjectList: state.cubeSubjectReducer?.gettingCubeSubjectList || false,
     getCubeSubjectListSuccess: state.cubeSubjectReducer?.getCubeSubjectListSuccess || false,
-    getCubeSubjectListFailure: state.cubeSubjectReducer?.getCubeSubjectListFailureMsg || "",
-    updateCubeSubjectStatusSuccess: state.cubeSubjectReducer?.updateCubeSubjectStatusSuccess || false,
-    updateCubeSubjectStatusFailure: state.cubeSubjectReducer?.updateCubeSubjectStatusFailureMsg || "",
-    updatingCubeSubjectStatus: state.cubeSubjectReducer?.updatingCubeSubjectStatus || false,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     fetchCubeSubjectList: () => dispatch(fetchCubeSubjectList()),
+    fetchCubeSkillList: () => dispatch(fetchCubeSkillList()), // Thêm dòng này
     updateCubeSubjectStatus: (key, status) =>
       dispatch(updateCubeSubjectStatus(key, status)),
     addCubeSubject: (values) => dispatch(addCubeSubject(values)),

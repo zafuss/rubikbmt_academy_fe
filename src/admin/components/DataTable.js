@@ -154,14 +154,14 @@ const DataTable = ({
           >
             Sửa
           </Button>
-          <Button
+          {/* <Button
             type="link"
             danger
             onClick={() => showDeleteConfirm(record.key)}
             disabled={loading || modalLoading}
           >
             Xóa
-          </Button>
+          </Button> */}
         </Space>
       );
     },

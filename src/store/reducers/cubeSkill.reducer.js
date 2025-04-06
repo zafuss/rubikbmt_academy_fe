@@ -33,8 +33,12 @@ const initState = {
   updateCubeSkillStatusSuccess: false,
   updateCubeSkillStatusFailureMsg: "",
 };
-
-const cubeSkillReducer = (state = initState, action) => {
+const initialState = {
+  cubeSkillList: [], // Giá trị mặc định là mảng rỗng
+  loading: false,
+  error: null,
+};
+const cubeSkillReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_CUBE_SKILLS_REQUEST:
   return {

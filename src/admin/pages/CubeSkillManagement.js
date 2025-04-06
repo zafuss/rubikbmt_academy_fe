@@ -77,21 +77,15 @@ class CubeSkillManagement extends Component {
         render: (text) => text || "Chưa cập nhật",
       },
       {
-        title: "Mô tả",
-        dataIndex: "description",
-        key: "description",
-        width: 300,
-        render: (text) => text || "Chưa cập nhật",
-      },
-      {
-        title: "Trạng thái",
-        key: "status",
-        width: 150,
-        render: (text, record) => {
-          const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
-          return <span>{statusText}</span>;
-        },
-      },
+      title: "Chủ đề Rubik",
+      dataIndex: "cubeSubject",
+      key: "cubeSubject",
+      width: 300,
+      render: (cubeSubject) =>
+        cubeSubject && Array.isArray(cubeSubject)
+          ? cubeSubject.map((subject) => subject.name).join(", ")
+          : "Không xác định",
+    },
     ];
 
     return [sttColumn, ...columns];

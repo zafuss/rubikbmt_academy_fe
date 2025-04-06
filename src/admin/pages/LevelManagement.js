@@ -79,15 +79,6 @@ class LevelManagement extends Component {
       width: 300,
       render: (text) => text || "Chưa cập nhật",
     },
-    {
-      title: "Trạng thái",
-      key: "status",
-      width: 150,
-      render: (text, record) => {
-        const statusText = record.status === 1 ? "Hoạt động" : "Không hoạt động";
-        return <span>{statusText}</span>;
-      },
-    },
   ];
 
   return [sttColumn, ...columns];

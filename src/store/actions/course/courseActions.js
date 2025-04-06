@@ -40,10 +40,11 @@ const fetchCoursesFailure = (error) => ({
 
 export const fetchCourseList = () => async (dispatch) => {
   dispatch(fetchCoursesRequest());
-  const apiUrl = `${BASE_URL}course/getCourses`; // Endpoint đầy đủ: http://localhost:3001/api/v1/course/getCourses
+  const apiUrl = BASE_URL + "course/get-list";
   try {
-    const res = await customAxios.get(apiUrl);
-    dispatch(fetchCoursesSuccess(res.data.courses)); // Truyền danh sách courses từ response
+    const result = await customAxios.get(apiUrl, { withCredentials: true });
+    console.log("API Response:", result.data.data.courses); // Kiểm tra dữ liệu trả về
+    dispatch(fetchCoursesSuccess(result.data.data.courses)); // Truy cập đúng trường `courses`
   } catch (e) {
     handleApiError(dispatch, fetchCoursesFailure, e);
   }
@@ -59,12 +60,12 @@ const addCourseFailure = (error) => ({
 
 export const addCourse = (course) => async (dispatch) => {
   dispatch(addCourseRequest());
-  const apiUrl = `${BASE_URL}course/addCourse`; // Endpoint đầy đủ: http://localhost:3001/api/v1/course/addCourse
+  const apiUrl = BASE_URL + "courses/add";
   try {
-    const res = await customAxios.post(apiUrl, course);
+    const res = await customAxios.post(apiUrl, course, { withCredentials: true });
     if (res.status === 201 || res.status === 200) {
       dispatch(addCourseSuccess());
-      dispatch(fetchCourseList()); // Lấy lại danh sách khóa học sau khi thêm thành công
+      dispatch(fetchCourseList());
     } else {
       dispatch(addCourseFailure(res.data.message));
     }
@@ -83,14 +84,12 @@ const updateCourseFailure = (error) => ({
 
 export const updateCourse = (course) => async (dispatch) => {
   dispatch(updateCourseRequest());
-  const apiUrl = `${BASE_URL}course/updateCourse`; // Endpoint đầy đủ: http://localhost:3001/api/v1/course/updateCourse
+  const apiUrl = `${BASE_URL}courses/update/${course.key}`;
   try {
-    const res = await customAxios.put(apiUrl, course);
+    const res = await customAxios.put(apiUrl, course, { withCredentials: true });
     if (res.status === 200) {
       dispatch(updateCourseSuccess());
       dispatch(fetchCourseList());
-    } else {
-      dispatch(updateCourseFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCourseFailure, e);
@@ -105,16 +104,14 @@ const deleteCourseFailure = (error) => ({
   payload: error,
 });
 
-export const deleteCourse = (id) => async (dispatch) => {
+export const deleteCourse = (courseId) => async (dispatch) => {
   dispatch(deleteCourseRequest());
-  const apiUrl = `${BASE_URL}course/deleteCourse/${id}`; // Endpoint đầy đủ: http://localhost:3001/api/v1/course/deleteCourse/:id
+  const apiUrl = `${BASE_URL}courses/delete/${courseId}`;
   try {
-    const res = await customAxios.delete(apiUrl);
+    const res = await customAxios.delete(apiUrl, { withCredentials: true });
     if (res.status === 200) {
       dispatch(deleteCourseSuccess());
       dispatch(fetchCourseList());
-    } else {
-      dispatch(deleteCourseFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, deleteCourseFailure, e);
@@ -133,16 +130,18 @@ const updateCourseStatusFailure = (error) => ({
   payload: error,
 });
 
-export const updateCourseStatus = (id, status) => async (dispatch) => {
+export const updateCourseStatus = (courseId, status) => async (dispatch) => {
   dispatch(updateCourseStatusRequest());
-  const apiUrl = `${BASE_URL}course/updateCourseStatus`; // Endpoint đầy đủ: http://localhost:3001/api/v1/course/updateCourseStatus
+  const apiUrl = `${BASE_URL}courses/update-status/${courseId}`;
   try {
-    const res = await customAxios.patch(apiUrl, { id, status });
+    const res = await customAxios.patch(
+      apiUrl,
+      { status },
+      { withCredentials: true }
+    );
     if (res.status === 200) {
       dispatch(updateCourseStatusSuccess());
       dispatch(fetchCourseList());
-    } else {
-      dispatch(updateCourseStatusFailure(res.data.message));
     }
   } catch (e) {
     handleApiError(dispatch, updateCourseStatusFailure, e);

@@ -3,7 +3,7 @@ import { Row, Col } from "antd";
 import { motion } from "framer-motion";
 import DataTable from "./DataTable.js";
 import styles from "../styles/DataManagementPage.module.scss";
-
+import { Select } from "antd";
 class DataManagementPage extends Component {
   render() {
     const {
