@@ -62,7 +62,9 @@ export const addCourse = (course) => async (dispatch) => {
   dispatch(addCourseRequest());
   const apiUrl = BASE_URL + "courses/add";
   try {
-    const res = await customAxios.post(apiUrl, course, { withCredentials: true });
+    const res = await customAxios.post(apiUrl, course, {
+      withCredentials: true,
+    });
     if (res.status === 201 || res.status === 200) {
       dispatch(addCourseSuccess());
       dispatch(fetchCourseList());
@@ -86,7 +88,9 @@ export const updateCourse = (course) => async (dispatch) => {
   dispatch(updateCourseRequest());
   const apiUrl = `${BASE_URL}courses/update/${course.key}`;
   try {
-    const res = await customAxios.put(apiUrl, course, { withCredentials: true });
+    const res = await customAxios.put(apiUrl, course, {
+      withCredentials: true,
+    });
     if (res.status === 200) {
       dispatch(updateCourseSuccess());
       dispatch(fetchCourseList());

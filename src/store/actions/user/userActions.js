@@ -37,6 +37,12 @@ const {
   ADD_USER_REQUEST,
   ADD_USER_SUCCESS,
   ADD_USER_FAILURE,
+  FETCH_STUDENTS_REQUEST,
+  FETCH_STUDENTS_SUCCESS,
+  FETCH_STUDENTS_FAILURE,
+  FETCH_MENTORS_REQUEST,
+  FETCH_MENTORS_SUCCESS,
+  FETCH_MENTORS_FAILURE,
 } = require("./userTypes");
 
 const BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -248,9 +254,10 @@ export const logoutUser = () => async (dispatch) => {
 };
 
 const fetchUserListRequest = () => ({ type: FETCH_USER_LIST_REQUEST });
-const fetchUserListSuccess = (users) => ({
+const fetchUserListSuccess = (users, userType) => ({
   type: FETCH_USER_LIST_SUCCESS,
   payload: users,
+  userType: userType ?? null,
 });
 const fetchUserListFailure = (error) => ({
   type: FETCH_USER_LIST_FAILURE,
@@ -264,6 +271,33 @@ export const fetchUserList = () => async (dispatch) => {
   try {
     const res = await customAxios.get(apiUrl, { withCredentials: true });
     dispatch(fetchUserListSuccess(res.data));
+  } catch (e) {
+    handleApiError(dispatch, fetchUserListFailure, e);
+  }
+};
+
+export const fetchMentorList = () => async (dispatch) => {
+  dispatch(fetchUserListRequest());
+  // eslint-disable-next-line no-useless-concat
+  const apiUrl = BASE_URL + `auth/list-teacher`;
+  // const apiUrl = BASE_URL + `user-list?page=${page}&limit=${limit}`;
+  try {
+    const res = await customAxios.get(apiUrl, { withCredentials: true });
+    console.log(res.data);
+    dispatch(fetchUserListSuccess(res.data, "mentor"));
+  } catch (e) {
+    handleApiError(dispatch, fetchUserListFailure, e);
+  }
+};
+
+export const fetchStudentList = () => async (dispatch) => {
+  dispatch(fetchUserListRequest());
+  // eslint-disable-next-line no-useless-concat
+  const apiUrl = BASE_URL + `auth/list-student`;
+  // const apiUrl = BASE_URL + `user-list?page=${page}&limit=${limit}`;
+  try {
+    const res = await customAxios.get(apiUrl, { withCredentials: true });
+    dispatch(fetchUserListSuccess(res.data, "student"));
   } catch (e) {
     handleApiError(dispatch, fetchUserListFailure, e);
   }

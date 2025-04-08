@@ -10,7 +10,6 @@ import UserManagement from "./admin/pages/UserManagement";
 import MentorManagement from "./admin/pages/MentorManagement";
 import StudentManagement from "./admin/pages/StudentManagement";
 import Profile from "./admin/pages/Profile";
-import ClassList from "./admin/pages/ClassList";
 import AddMassClass from "./admin/pages/AddMassClass";
 import AddOneOnOneClass from "./admin/pages/AddOneOnOneClass";
 import colors from "./admin/constants/colors.js";
@@ -25,6 +24,9 @@ import DifficultyManagement from "./admin/pages/DifficultyManagement";
 import ProtectedRoute from "./admin/components/ProtectedRoute";
 import LevelManagement from "./admin/pages/LevelManagement";
 import CubeSkillManagement from "./admin/pages/CubeSkillManagement";
+import CourseDetailManagement from "./admin/pages/CourseDetailManagement";
+import SessionManagement from "./admin/pages/SessionManagement";
+import EditSession from "./admin/pages/EditSession";
 const root = document.documentElement;
 
 Object.keys(colors).forEach((key) => {
@@ -75,8 +77,10 @@ function App() {
               <Route path="levels" element={<LevelManagement />} />
               <Route path="cubeSkills" element={<CubeSkillManagement />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="classes/list" element={<ClassList />} />
+              <Route path="classes/list" element={<CourseDetailManagement />} />
               <Route path="classes/add/mass" element={<AddMassClass />} />
+              <Route path="session/:id" element={<SessionManagement />} />
+              <Route path="session/edit/:id" element={<EditSession />} />
               <Route
                 path="classes/add/one-on-one"
                 element={<AddOneOnOneClass />}

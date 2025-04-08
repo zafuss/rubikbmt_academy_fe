@@ -64,6 +64,8 @@ const initState = {
   addingUser: false,
   addUserSuccess: false,
   addUserFailureMsg: "",
+  students: [],
+  mentors: [],
 };
 
 function userReducer(state = initState, action) {
@@ -75,9 +77,23 @@ function userReducer(state = initState, action) {
         loading: true,
       };
     case FETCH_USERS_SUCCESS:
+      if (action.userType === "student") {
+        return {
+          ...state,
+          loading: false,
+          students: action.payload,
+        };
+      }
+      if (action.userType === "mentor") {
+        return {
+          ...state,
+          loading: false,
+          mentors: action.payload,
+        };
+      }
       return {
-        loading: false,
         users: action.payload,
+        loading: false,
         error: "",
       };
     case FETCH_USERS_FAILURE:
@@ -230,11 +246,29 @@ function userReducer(state = initState, action) {
         getUserListSuccess: false,
       };
     case FETCH_USER_LIST_SUCCESS:
+      if (action.userType === "student") {
+        return {
+          ...state,
+          loading: false,
+          gettingUserList: false,
+          getUserListSuccess: true,
+          students: action.payload.data,
+        };
+      }
+      if (action.userType === "mentor") {
+        return {
+          ...state,
+          loading: false,
+          gettingUserList: false,
+          getUserListSuccess: true,
+          mentors: action.payload.data,
+        };
+      }
       return {
         ...state,
         gettingUserList: false,
-        userList: action.payload,
         getUserListSuccess: true,
+        userList: action.payload,
       };
     case FETCH_USER_LIST_FAILURE:
       return {

@@ -16,6 +16,8 @@ class DataManagementPage extends Component {
       onDelete,
       loading,
       formFields,
+      callback,
+      updateCallback,
     } = this.props;
 
     return (
@@ -39,6 +41,8 @@ class DataManagementPage extends Component {
                 onUpdate={onUpdate}
                 onDelete={onDelete}
                 formFields={formFields}
+                callback={callback}
+                updateCallback={updateCallback}
               />
             </Col>
           </Row>

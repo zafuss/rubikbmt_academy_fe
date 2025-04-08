@@ -25,7 +25,7 @@ const MentorsSection = () => {
       viewport={{ once: true }}
     >
       <div className={styles.headerWrapper}>
-        <h1>CHỌN 1 HUẤN LUYỆN VIÊN ĐỂ BẮT ĐẦU</h1>
+        <h1>ĐỘI NGŨ HUẤN LUYỆN VIÊN TÀI NĂNG</h1>
       </div>
       <Container>
         <Row className="justify-content-center">

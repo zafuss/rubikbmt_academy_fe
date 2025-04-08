@@ -38,6 +38,8 @@ const DataTable = ({
   onUpdate = () => {},
   onDelete = () => {},
   formFields = [],
+  callback = () => {},
+  updateCallback = () => {},
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -149,7 +151,7 @@ const DataTable = ({
           <Button
             type="link"
             style={{ color: colors.primary }}
-            onClick={() => showModal(record)}
+            onClick={() => updateCallback() ?? showModal(record)}
             disabled={loading || modalLoading}
           >
             Sửa
@@ -192,7 +194,7 @@ const DataTable = ({
         <Button
           type="primary"
           icon={<PlusOutlined />}
-          onClick={() => showModal()}
+          onClick={() => callback() ?? showModal()}
           style={{ background: colors.primary, border: "none" }}
           disabled={loading || modalLoading}
         >
