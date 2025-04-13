@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/rubikbmt_academy_fe/static/css/main.38a901c6.css",
+    "main.js": "/rubikbmt_academy_fe/static/js/main.b3a46700.js",
+    "static/js/453.7f8ce1fc.chunk.js": "/rubikbmt_academy_fe/static/js/453.7f8ce1fc.chunk.js",
+    "static/js/977.62039746.chunk.js": "/rubikbmt_academy_fe/static/js/977.62039746.chunk.js",
+    "static/js/849.94125965.chunk.js": "/rubikbmt_academy_fe/static/js/849.94125965.chunk.js",
+    "static/media/background.svg": "/rubikbmt_academy_fe/static/media/background.491538d5415bba589b37.svg",
+    "static/media/CanvaSans-BoldItalic.otf": "/rubikbmt_academy_fe/static/media/CanvaSans-BoldItalic.486118b1034ac3f44dbc.otf",
+    "static/media/CanvaSans-Bold.otf": "/rubikbmt_academy_fe/static/media/CanvaSans-Bold.1f5ab4dcffc833af0af7.otf",
+    "static/media/CanvaSans-Regular.otf": "/rubikbmt_academy_fe/static/media/CanvaSans-Regular.540e7d60cc9426603731.otf",
+    "index.html": "/rubikbmt_academy_fe/index.html",
+    "main.38a901c6.css.map": "/rubikbmt_academy_fe/static/css/main.38a901c6.css.map",
+    "main.b3a46700.js.map": "/rubikbmt_academy_fe/static/js/main.b3a46700.js.map",
+    "453.7f8ce1fc.chunk.js.map": "/rubikbmt_academy_fe/static/js/453.7f8ce1fc.chunk.js.map",
+    "849.94125965.chunk.js.map": "/rubikbmt_academy_fe/static/js/849.94125965.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.38a901c6.css",
+    "static/js/main.b3a46700.js"
+  ]
+}
