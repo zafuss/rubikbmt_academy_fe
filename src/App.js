@@ -50,7 +50,7 @@ function ScrollToHashElement() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/rubikbmt_academy_fe">
       <React.StrictMode>
         <Provider store={store}>
           <ScrollToHashElement />
