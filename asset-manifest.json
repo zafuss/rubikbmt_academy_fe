@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/rubikbmt_academy_fe/static/css/main.38a901c6.css",
-    "main.js": "/rubikbmt_academy_fe/static/js/main.c2c79de8.js",
+    "main.js": "/rubikbmt_academy_fe/static/js/main.1888c3c9.js",
     "static/js/453.7f8ce1fc.chunk.js": "/rubikbmt_academy_fe/static/js/453.7f8ce1fc.chunk.js",
     "static/js/977.62039746.chunk.js": "/rubikbmt_academy_fe/static/js/977.62039746.chunk.js",
     "static/js/849.94125965.chunk.js": "/rubikbmt_academy_fe/static/js/849.94125965.chunk.js",
@@ -11,12 +11,12 @@
     "static/media/CanvaSans-Regular.otf": "/rubikbmt_academy_fe/static/media/CanvaSans-Regular.540e7d60cc9426603731.otf",
     "index.html": "/rubikbmt_academy_fe/index.html",
     "main.38a901c6.css.map": "/rubikbmt_academy_fe/static/css/main.38a901c6.css.map",
-    "main.c2c79de8.js.map": "/rubikbmt_academy_fe/static/js/main.c2c79de8.js.map",
+    "main.1888c3c9.js.map": "/rubikbmt_academy_fe/static/js/main.1888c3c9.js.map",
     "453.7f8ce1fc.chunk.js.map": "/rubikbmt_academy_fe/static/js/453.7f8ce1fc.chunk.js.map",
     "849.94125965.chunk.js.map": "/rubikbmt_academy_fe/static/js/849.94125965.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.38a901c6.css",
-    "static/js/main.c2c79de8.js"
+    "static/js/main.1888c3c9.js"
   ]
 }
