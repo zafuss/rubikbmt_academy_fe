@@ -142,10 +142,10 @@ class EditSession extends Component {
       navigate("/admin/session/" + this.props.currentSession.idCourseDetail);
     }
 
-    // Khi có lỗi
-    if (this.props.error && prevProps.error !== this.props.error) {
-      message.error(`Cập nhật buổi học thất bại: ${this.props.error}`);
-    }
+    // // Khi có lỗi
+    // if (this.props.error && prevProps.error !== this.props.error) {
+    //   message.error(`Cập nhật buổi học thất bại: ${this.props.error}`);
+    // }
   }
 
   onFinish = (values) => {

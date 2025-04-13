@@ -341,11 +341,6 @@ class AddOneOnOneClass extends Component {
                 }
                 rules={[
                   { required: true, message: "Vui lòng nhập học phí thực tế!" },
-                  {
-                    type: "number",
-                    min: 0,
-                    message: "Học phí không được âm!",
-                  },
                 ]}
               >
                 <Input
@@ -368,40 +363,11 @@ class AddOneOnOneClass extends Component {
                     required: true,
                     message: "Vui lòng nhập số tiền đã thanh toán!",
                   },
-                  {
-                    type: "number",
-                    min: 0,
-                    message: "Số tiền không được âm!",
-                  },
                 ]}
               >
                 <Input
                   type="number"
                   placeholder="Nhập số tiền đã thanh toán"
-                  size="large"
-                  style={{ borderRadius: 8 }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="numberOfStudied"
-                label={
-                  <span style={{ fontWeight: 500, color: colors.primary }}>
-                    Số buổi đã học
-                  </span>
-                }
-                rules={[
-                  { required: true, message: "Vui lòng nhập số buổi đã học!" },
-                  {
-                    type: "number",
-                    min: 0,
-                    message: "Số buổi không được âm!",
-                  },
-                ]}
-              >
-                <Input
-                  type="number"
-                  placeholder="Nhập số buổi đã học"
                   size="large"
                   style={{ borderRadius: 8 }}
                 />
