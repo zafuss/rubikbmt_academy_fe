@@ -48,7 +48,7 @@ const ShopeeSection = () => {
               variants={imageVariants}
             >
               <img
-                src="/images/shopee_screen.png"
+                src={`${process.env.PUBLIC_URL}/images/shopee_screen.png`}
                 alt="BMT Image"
                 className={styles.imageContainerImg}
               />

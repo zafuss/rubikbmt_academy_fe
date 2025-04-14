@@ -36,7 +36,7 @@ const IntroSection = () => {
           </Col>
           <Col md={6} className="text-center text-md-start">
             <motion.img
-              src="/images/newLogo.png"
+              src={`${process.env.PUBLIC_URL}/images/newLogo.png`}
               alt="Logo"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -49,8 +49,13 @@ const MentorsSection = () => {
             <Col lg={4} md={6} sm={12} className="mb-4" key={index}>
               <div className={styles.info}>
                 <img
-                  src={mentor.img}
-                  alt={`${mentor.name} image`}
+                  src={`${process.env.PUBLIC_URL}${mentor.img}`}
+                  alt={`${mentor.name}`}
+                  className={styles.mentorImage}
+                />
+                <img
+                  src={`${process.env.PUBLIC_URL}${mentor.img}`}
+                  alt={`${mentor.name}`}
                   className={styles.mentorImage}
                 />
               </div>

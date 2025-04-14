@@ -21,7 +21,11 @@ const Footer = () => {
         <Row className="justify-content-between">
           <Col md={4} className="mb-4 d-flex flex-column align-items-start">
             <div className="d-flex align-items-center">
-              <img src="/images/AvatarRubikBmt.png" alt="Logo" width="40px" />
+              <img
+                src={`${process.env.PUBLIC_URL}/images/AvatarRubikBmt.png`}
+                alt="Logo"
+                width="40px"
+              />
               <h3 className="ms-2 mb-0">RUBIK BMT</h3>
             </div>
             <p className="mt-2 mb-0">
@@ -38,7 +42,7 @@ const Footer = () => {
           </Col>
           <Col md={4} className="mb-4 text-md">
             <h4 className="text-warning">Liên hệ</h4>
-            <ul className="list-unstyled">
+            <ul className="list-un</Col>styled">
               <li>
                 <a
                   href="mailto:rubikbmt47@gmail.com"

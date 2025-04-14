@@ -80,7 +80,7 @@ const SocialMediaSection = () => {
                 <a href={link.href} target="_blank" rel="noopener noreferrer">
                   <div className="card-body d-flex align-items-center">
                     <img
-                      src={link.icon}
+                      src={`${process.env.PUBLIC_URL}${link.icon}`}
                       className={`me-3 ${styles.icon}`}
                       alt={`Icon ${index + 1}`}
                     />

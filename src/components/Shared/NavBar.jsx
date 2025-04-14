@@ -23,7 +23,7 @@ const NavBar = () => {
       <div className="container">
         <Link className="navbar-brand" to="/">
           <img
-            src="/images/AvatarRubikBmt.png"
+            src={`${process.env.PUBLIC_URL}/images/AvatarRubikBmt.png`}
             alt="Logo"
             width="40"
             height="40"

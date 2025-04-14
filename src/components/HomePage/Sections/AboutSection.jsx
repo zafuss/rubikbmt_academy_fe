@@ -62,7 +62,7 @@ const AboutSection = () => {
                 <div className={styles.info}>
                   <div className={styles.circleImage}>
                     <img
-                      src={founder.image}
+                      src={`${process.env.PUBLIC_URL}${founder.image}`}
                       alt={`${founder.name} image`}
                       className="img-fluid rounded-circle"
                     />
